@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>botiss製品ご注文フォーム</title>
+<style>
+:root {
+  --bg: #f0f4f8;
+  --white: #ffffff;
+  --border: #d0dce8;
+  --text: #1a1a2e;
+  --muted: #6b7280;
+  --bone-dark: #c2410c;
+  --bone-mid:  #ea580c;
+  --bone-light:#fff7ed;
+  --bone-border:#fed7aa;
+  --mem-dark:  #1d4ed8;
+  --mem-mid:   #3b82f6;
+  --mem-light: #eff6ff;
+  --mem-border:#bfdbfe;
+  --other-dark: #065f46;
+  --other-mid:  #059669;
+  --other-light:#f0fdf4;
+  --other-border:#a7f3d0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  padding-bottom: 110px;
+}
+
+/* ===== TOP BAR ===== */
+.top-bar {
+  background: #ffffff;
+  color: var(--text);
+  padding: 0;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  border-bottom: 3px solid #00a19a;
+}
+.top-bar-inner {
+  max-width: 720px; margin: 0 auto;
+  padding: 14px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.top-bar-left { display: flex; align-items: center; gap: 14px; }
+.top-bar-logo {
+  width: 44px; height: 44px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.top-bar-logo img { width: 100%; height: 100%; object-fit: contain; }
+.top-bar h1 { font-size: 16px; font-weight: 800; letter-spacing: -0.3px; color: #1a1a2e; }
+.top-bar .sub { font-size: 10.5px; color: #6b7280; margin-top: 2px; letter-spacing: 0.2px; }
+.top-bar-badge {
+  background: #e6f7f6; color: #00796b; border: 1.5px solid #b2dfdb;
+  border-radius: 20px; padding: 5px 13px; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.top-bar-accent {
+  height: 3px; background: linear-gradient(90deg, #00a19a 0%, #4dd0c8 40%, #a8e6cf 70%, #f0f4f8 100%);
+}
+
+/* ===== CONTAINER ===== */
+.container { max-width: 720px; margin: 0 auto; padding: 20px 14px; }
+
+/* ===== SECTION LABEL ===== */
+.section-label {
+  font-size: 10.5px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 1.2px; color: var(--muted);
+  margin: 20px 0 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* ===== INFO CARD ===== */
+.info-card {
+  background: var(--white); border-radius: 14px;
+  padding: 18px 20px; margin-bottom: 8px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  border: 1px solid var(--border);
+}
+.info-card h2 { font-size: 12px; font-weight: 700; color: #0077b6; margin-bottom: 14px; }
+.field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field-grid .full { grid-column: 1 / -1; }
+.field-group label {
+  display: block; font-size: 10px; font-weight: 700; color: var(--muted);
+  margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.field-group input {
+  width: 100%; padding: 9px 12px; border: 1.5px solid var(--border);
+  border-radius: 8px; font-size: 13px; font-family: inherit;
+  background: #fafcff; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.field-group input:focus { outline:none; border-color:#00b4d8; box-shadow:0 0 0 3px rgba(0,180,216,0.15); }
+
+/* ===== RATE CARD ===== */
+.rate-card {
+  background: linear-gradient(135deg, #fffbeb, #fefce8);
+  border: 1.5px solid #fde047;
+  border-radius: 14px; padding: 14px 20px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 8px rgba(253,224,71,0.3);
+}
+.rate-card label { font-size: 12px; font-weight: 700; color: #713f12; white-space: nowrap; }
+.rate-card input {
+  width: 90px; padding: 8px 10px; border: 1.5px solid #fde047;
+  border-radius: 8px; font-size: 15px; font-weight: 700;
+  background: white; text-align: center; font-family: inherit;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+.rate-card input:focus { outline: none; border-color: #ca8a04; box-shadow: 0 0 0 3px rgba(202,138,4,0.15); }
+.rate-card input.locked {
+  background: #fef9c3; border-color: #e5e7eb; color: #713f12;
+  pointer-events: none; opacity: 0.85;
+}
+.rate-note { font-size: 11px; color: #92400e; }
+.rate-lock-btn {
+  background: none; border: 1.5px solid #d97706; color: #d97706;
+  border-radius: 8px; padding: 5px 10px; font-size: 11px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; font-family: inherit;
+}
+.rate-lock-btn:hover { background: #d97706; color: white; }
+.rate-lock-btn.unlocked { border-color: #16a34a; color: #16a34a; }
+.rate-lock-btn.unlocked:hover { background: #16a34a; color: white; }
+/* admin modal */
+.admin-overlay {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4);
+  z-index:9999; align-items:center; justify-content:center;
+}
+.admin-overlay.show { display:flex; }
+.admin-modal {
+  background:white; border-radius:16px; padding:28px 32px; width:320px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3); text-align:center;
+}
+.admin-modal h3 { font-size:14px; margin-bottom:14px; color:#1a1a2e; }
+.admin-modal input {
+  width:100%; padding:10px 14px; border:1.5px solid #d0dce8;
+  border-radius:8px; font-size:14px; text-align:center; font-family:inherit;
+  margin-bottom:12px;
+}
+.admin-modal input:focus { outline:none; border-color:#d97706; box-shadow:0 0 0 3px rgba(217,119,6,0.15); }
+.admin-modal .admin-btns { display:flex; gap:8px; }
+.admin-modal .admin-btns button {
+  flex:1; padding:9px; border-radius:8px; font-size:12px; font-weight:700;
+  cursor:pointer; font-family:inherit; border:none;
+}
+.admin-modal .btn-cancel { background:#f3f4f6; color:#6b7280; }
+.admin-modal .btn-ok { background:#d97706; color:white; }
+
+/* ===== CATEGORY GROUP LABEL ===== */
+.cat-group-label {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; border-radius: 10px;
+  font-size: 12px; font-weight: 800;
+  margin: 16px 0 8px; letter-spacing: 0.5px;
+}
+.cat-group-label.bone  { background: #fff7ed; color: var(--bone-dark);  border-left: 4px solid var(--bone-mid); }
+.cat-group-label.mem   { background: #eff6ff; color: var(--mem-dark);   border-left: 4px solid var(--mem-mid); }
+.cat-group-label.other { background: #f0fdf4; color: var(--other-dark); border-left: 4px solid var(--other-mid); }
+
+/* ===== ACCORDION ===== */
+.accordion { margin-bottom: 7px; border-radius: 12px; overflow: visible; }
+
+.acc-header {
+  border-radius: 12px; padding: 13px 16px; cursor: pointer;
+  display: flex; align-items: center; gap: 12px; user-select: none;
+  transition: box-shadow 0.2s, transform 0.1s; box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  border: 1.5px solid transparent;
+}
+.acc-header:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); transform: translateY(-1px); }
+.acc-header:active { transform: translateY(0); }
+.acc-header.open  { border-radius: 12px 12px 0 0; transform: none; }
+
+.acc-header.bone  { background: var(--bone-light);  border-color: var(--bone-border); }
+.acc-header.bone:hover  { border-color: var(--bone-mid); }
+.acc-header.bone.open   { border-color: var(--bone-mid); border-bottom-color: var(--bone-border); }
+.acc-header.mem   { background: var(--mem-light);   border-color: var(--mem-border); }
+.acc-header.mem:hover   { border-color: var(--mem-mid); }
+.acc-header.mem.open    { border-color: var(--mem-mid); border-bottom-color: var(--mem-border); }
+.acc-header.other { background: var(--other-light); border-color: var(--other-border); }
+.acc-header.other:hover { border-color: var(--other-mid); }
+.acc-header.other.open  { border-color: var(--other-mid); border-bottom-color: var(--other-border); }
+
+/* Product image in accordion */
+.acc-img-wrap {
+  width: 56px; height: 56px; flex-shrink: 0;
+  border-radius: 12px; overflow: hidden;
+  background: #ffffff; border: 1.5px solid rgba(0,0,0,0.06);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 4px;
+}
+.acc-img { width: 100%; height: 100%; object-fit: contain; display: block; border-radius: 6px; }
+.acc-img-placeholder {
+  font-size: 13px; font-weight: 900; opacity: 0.6;
+  color: #00a19a; letter-spacing: -0.5px;
+}
+
+.acc-info { flex: 1; min-width: 0; }
+.acc-name { font-size: 13px; font-weight: 800; line-height: 1.3; }
+.acc-name.bone  { color: var(--bone-dark); }
+.acc-name.mem   { color: var(--mem-dark); }
+.acc-name.other { color: var(--other-dark); }
+.acc-meta { font-size: 10px; color: var(--muted); margin-top: 3px; }
+
+.acc-badge-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.new-badge {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  color: white; font-size: 9px; font-weight: 800;
+  padding: 2px 6px; border-radius: 5px; letter-spacing: 0.5px;
+  box-shadow: 0 1px 4px rgba(220,38,38,0.4);
+}
+.acc-subtotal {
+  font-size: 12px; font-weight: 700; color: var(--muted);
+  min-width: 90px; text-align: right; line-height: 1.4;
+}
+.acc-subtotal.nonzero { color: #b91c1c; }
+.acc-arrow { font-size: 14px; color: var(--muted); transition: transform 0.25s; flex-shrink: 0; }
+.acc-header.open .acc-arrow { transform: rotate(180deg); }
+
+/* ===== ACCORDION BODY ===== */
+.acc-body { display: none; border-radius: 0 0 12px 12px; border: 1.5px solid; border-top: none; overflow: hidden; }
+.acc-body.open { display: block; }
+.acc-body.bone  { border-color: var(--bone-mid);  background: #fffbf7; }
+.acc-body.mem   { border-color: var(--mem-mid);   background: #f8fbff; }
+.acc-body.other { border-color: var(--other-mid); background: #f7fdf9; }
+
+.acc-table { width: 100%; border-collapse: collapse; }
+.acc-table thead th {
+  padding: 8px 12px; font-size: 10px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.8);
+}
+.acc-table thead th.th-r { text-align: right; }
+.acc-table thead th.th-c { text-align: center; }
+
+.acc-table tbody tr { border-bottom: 1px solid rgba(0,0,0,0.05); transition: background 0.12s; }
+.acc-table tbody tr:last-child { border-bottom: none; }
+.acc-table tbody tr:hover { background: rgba(255,255,255,0.85); }
+.acc-table tbody tr.active.bone  { background: #ffedd5; }
+.acc-table tbody tr.active.mem   { background: #dbeafe; }
+.acc-table tbody tr.active.other { background: #d1fae5; }
+
+.acc-table td { padding: 10px 12px; vertical-align: middle; }
+.td-code { font-size: 10px; color: #bbb; white-space: nowrap; font-family: monospace; }
+.td-spec .spec-main { font-weight: 700; font-size: 12.5px; }
+.td-spec .spec-sub  { font-size: 10px; color: var(--muted); display: block; margin-top: 2px; }
+.td-price { text-align: right; white-space: nowrap; }
+.td-price .eur { font-size: 12.5px; font-weight: 700; }
+.td-price .jpy { font-size: 10px; color: #aaa; display: block; margin-top: 2px; transition: all 0.15s; }
+.td-price .jpy.line-total { color: #b91c1c; font-weight: 800; font-size: 11px; }
+
+/* ===== QTY CONTROL ===== */
+.qty-wrap { display: flex; align-items: center; justify-content: center; gap: 5px; }
+.q-btn {
+  width: 32px; height: 32px; border-radius: 8px; border: 2px solid #ccd5e0;
+  background: white; font-size: 18px; font-weight: 900;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.12s; user-select: none; line-height: 1;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.q-btn.minus { color: #b91c1c; }
+.q-btn.plus  { color: #1d4ed8; }
+.q-btn:hover { border-color: #60a5fa; background: #eff6ff; transform: scale(1.1); box-shadow: 0 2px 8px rgba(96,165,250,0.3); }
+.q-btn:active { transform: scale(0.93); }
+.q-num { min-width: 28px; text-align: center; font-size: 16px; font-weight: 900; color: #1d4ed8; }
+.q-num.nonzero { color: #b91c1c; }
+
+/* ===== STICKY BOTTOM ===== */
+.sticky-total {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: white; border-top: 2px solid #0077b6;
+  padding: 10px 20px; display: flex; align-items: center;
+  justify-content: space-between; z-index: 200;
+  box-shadow: 0 -6px 24px rgba(0,0,0,0.12); gap: 14px; flex-wrap: wrap;
+}
+.total-left { display: flex; align-items: center; gap: 14px; }
+.total-info { display: flex; flex-direction: column; }
+.total-label { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.total-eur { font-size: 26px; font-weight: 900; color: #94a3b8; line-height: 1.1; transition: color 0.3s; }
+.total-eur.has-order { color: #0077b6; }
+.total-eur.threshold-over  { color: #059669; }
+.total-eur.threshold-mid   { color: #d97706; }
+.total-eur.threshold-under { color: #dc2626; }
+.total-jpy { font-size: 13px; color: var(--muted); font-weight: 600; margin-top: 1px; }
+
+/* Shipping status badge */
+.shipping-badge {
+  padding: 6px 12px; border-radius: 20px;
+  font-size: 11px; font-weight: 800; line-height: 1.3;
+  white-space: nowrap; transition: all 0.3s;
+  text-align: center;
+}
+.shipping-badge.neutral { background: #f1f5f9; color: #94a3b8; }
+.shipping-badge.free    { background: #d1fae5; color: #065f46; border: 1.5px solid #6ee7b7; }
+.shipping-badge.half    { background: #fef3c7; color: #92400e; border: 1.5px solid #fcd34d; }
+.shipping-badge.full    { background: #fee2e2; color: #991b1b; border: 1.5px solid #fca5a5; }
+
+.action-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn {
+  padding: 10px 18px; border: none; border-radius: 9px;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  transition: all 0.15s; white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.15); }
+.btn:active { transform: translateY(0); }
+.btn-send   { background: linear-gradient(135deg, #dc2626, #ef4444); color: white; }
+.btn-send:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+.btn-copy   { background: linear-gradient(135deg, #0077b6, #00b4d8); color: white; }
+.btn-hist   { background: linear-gradient(135deg, #7c3aed, #8b5cf6); color: white; }
+.btn-reset  { background: #f8fafc; color: #4b5563; border: 1.5px solid #d1d5db; }
+
+/* ===== REMARKS ===== */
+.remarks-card {
+  background: var(--white); border-radius: 14px;
+  padding: 16px 20px; margin-bottom: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid var(--border);
+}
+.remarks-card label { font-size: 12px; font-weight: 700; color: #0077b6; display: block; margin-bottom: 8px; }
+.remarks-card textarea {
+  width: 100%; height: 68px; border: 1.5px solid var(--border);
+  border-radius: 9px; padding: 9px 12px; font-size: 13px;
+  font-family: inherit; resize: vertical; background: #fafcff;
+}
+.remarks-card textarea:focus { outline: none; border-color: #00b4d8; box-shadow: 0 0 0 3px rgba(0,180,216,0.12); }
+
+/* ===== ORDER NOTES ===== */
+.order-notes {
+  background: linear-gradient(135deg, #fffbeb, #fefce8);
+  border: 1px solid #fcd34d; border-radius: 12px;
+  padding: 14px 18px; margin-bottom: 14px;
+  font-size: 11px; color: #78350f; line-height: 2;
+}
+.order-notes .threshold-row {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;
+}
+.threshold-chip {
+  padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700;
+}
+.threshold-chip.green  { background: #d1fae5; color: #065f46; }
+.threshold-chip.yellow { background: #fef3c7; color: #92400e; }
+.threshold-chip.red    { background: #fee2e2; color: #991b1b; }
+
+/* ===== COPY TOAST ===== */
+.toast {
+  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: #1e293b; color: white; padding: 10px 20px; border-radius: 22px;
+  font-size: 12px; font-weight: 700; opacity: 0;
+  transition: opacity 0.25s, transform 0.25s; pointer-events: none; z-index: 500;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ===== HISTORY PANEL ===== */
+.hist-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55); z-index: 300;
+  align-items: flex-end; justify-content: center;
+  backdrop-filter: blur(3px);
+}
+.hist-overlay.open { display: flex; }
+.hist-panel {
+  background: white; border-radius: 20px 20px 0 0;
+  width: 100%; max-width: 720px; max-height: 80vh;
+  display: flex; flex-direction: column;
+  box-shadow: 0 -12px 40px rgba(0,0,0,0.25);
+}
+.hist-header {
+  padding: 18px 22px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.hist-header h3 { font-size: 15px; font-weight: 900; color: #7c3aed; }
+.hist-close {
+  width: 32px; height: 32px; border-radius: 50%; border: none;
+  background: #f1f5f9; font-size: 16px; cursor: pointer; display: flex;
+  align-items: center; justify-content: center; transition: background 0.15s;
+}
+.hist-close:hover { background: #e2e8f0; }
+.hist-body { overflow-y: auto; flex: 1; padding: 14px 18px; }
+.hist-empty { text-align: center; color: var(--muted); padding: 50px 20px; font-size: 14px; line-height: 2; }
+.hist-item {
+  border: 1.5px solid var(--border); border-radius: 12px;
+  padding: 14px 16px; margin-bottom: 10px; background: #fafcff;
+  transition: box-shadow 0.15s;
+}
+.hist-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.hist-item-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 9px;
+}
+.hist-item-title { font-weight: 800; font-size: 13px; }
+.hist-item-date  { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.hist-item-total { font-size: 13px; font-weight: 700; color: #b91c1c; text-align: right; }
+.hist-item-rows  { font-size: 11px; color: var(--muted); line-height: 1.9; }
+.hist-item-btns  { display: flex; gap: 8px; margin-top: 12px; }
+.btn-reorder {
+  padding: 7px 14px; background: linear-gradient(135deg, #0077b6, #00b4d8);
+  color: white; border: none; border-radius: 7px; font-size: 11px;
+  font-weight: 700; cursor: pointer; transition: all 0.15s;
+}
+.btn-reorder:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,119,182,0.3); }
+.btn-del-hist {
+  padding: 7px 14px; background: #fee2e2; color: #b91c1c;
+  border: none; border-radius: 7px; font-size: 11px; font-weight: 700;
+  cursor: pointer; transition: all 0.15s;
+}
+.btn-del-hist:hover { background: #fecaca; }
+
+@media (max-width: 520px) {
+  .field-grid { grid-template-columns: 1fr; }
+  .field-grid .full { grid-column: 1; }
+  .sticky-total { flex-direction: column; align-items: stretch; }
+  .action-btns  { flex-wrap: wrap; }
+  .btn { flex: 1 1 auto; justify-content: center; }
+  .top-bar-badge { display: none; }
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div class="top-bar-left">
+      <div class="top-bar-logo">
+        <img src="https://botiss.com/wp-content/uploads/2023/01/botiss-biomaterials-logo.svg" alt="botiss"
+          onerror="this.parentElement.innerHTML='<span style=&quot;font-size:13px;font-weight:900;color:#00a19a&quot;>botiss</span>'">
+      </div>
+      <div>
+        <h1>製品ご注文フォーム</h1>
+        <div class="sub">ウェビナー受講者様限定 ／ 数量を選んで注文を送信</div>
+      </div>
+    </div>
+    <div class="top-bar-badge">2025年10月 価格表</div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- 注文者情報 -->
+<div class="section-label">📋 注文者情報</div>
+<div class="info-card">
+  <div class="field-grid">
+    <div class="field-group">
+      <label>注文日</label>
+      <input type="date" id="f-date" />
+    </div>
+    <div class="field-group">
+      <label>TEL</label>
+      <input type="tel" id="f-tel" placeholder="03-0000-0000" />
+    </div>
+    <div class="field-group">
+      <label>Clinic Name（医院名）</label>
+      <input type="text" id="f-clinic" placeholder="○○歯科クリニック" />
+    </div>
+    <div class="field-group">
+      <label>Doctor Name（担当者名）</label>
+      <input type="text" id="f-doctor" placeholder="山田 太郎" />
+    </div>
+    <div class="field-group full">
+      <label>Clinic Address（住所）</label>
+      <input type="text" id="f-address" placeholder="東京都○○区..." />
+    </div>
+    <div class="field-group">
+      <label>メールアドレス（返信先）</label>
+      <input type="email" id="f-email" placeholder="yamada@clinic.jp" />
+    </div>
+  </div>
+</div>
+
+<!-- 為替レート -->
+<div class="section-label">💱 為替レート</div>
+<div class="rate-card">
+  <label>1€ ＝</label>
+  <input type="number" id="rate" value="184" min="1" step="1" oninput="updateAllJpy()" class="locked" readonly />
+  <label>円</label>
+  <span class="rate-note">※ 2026年3月 適用レート（前月カード決済レート）</span>
+  <button class="rate-lock-btn" onclick="showAdminModal()">🔒 管理者変更</button>
+</div>
+
+<!-- 管理者パスワードモーダル -->
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-modal">
+    <h3>🔑 管理者パスワード</h3>
+    <input type="password" id="adminPass" placeholder="パスワードを入力" onkeydown="if(event.key==='Enter')unlockRate()" />
+    <div class="admin-btns">
+      <button class="btn-cancel" onclick="hideAdminModal()">キャンセル</button>
+      <button class="btn-ok" onclick="unlockRate()">解除</button>
+    </div>
+  </div>
+</div>
+
+<!-- 補填材カテゴリ -->
+<div class="cat-group-label bone">🦴 骨補填材（Bone Substitute Materials）</div>
+
+<!-- cerabone® -->
+<div class="accordion" id="acc-cerabone">
+  <div class="acc-header bone" onclick="toggleAcc('cerabone')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/01/cerabone_01_1000.jpg" alt="cerabone"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name bone">cerabone®</div>
+      <div class="acc-meta">8製品 ／ 100% pure bovine bone mineral</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="acc-subtotal" id="sub-cerabone">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body bone" id="body-cerabone">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="bone" data-price="77.56"><td class="td-code">1510</td><td class="td-spec"><span class="spec-main">0.5-1.0mm</span><span class="spec-sub">0.5ml</span></td><td class="td-price"><span class="eur">77.56 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="102.56"><td class="td-code">1511</td><td class="td-spec"><span class="spec-main">0.5-1.0mm</span><span class="spec-sub">1.0ml</span></td><td class="td-price"><span class="eur">102.56 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="146.16"><td class="td-code">1512</td><td class="td-spec"><span class="spec-main">0.5-1.0mm</span><span class="spec-sub">2.0ml</span></td><td class="td-price"><span class="eur">146.16 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="223.96"><td class="td-code">1515</td><td class="td-spec"><span class="spec-main">0.5-1.0mm</span><span class="spec-sub">5.0ml</span></td><td class="td-price"><span class="eur">223.96 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="77.56"><td class="td-code">1520</td><td class="td-spec"><span class="spec-main">1.0-2.0mm</span><span class="spec-sub">0.5ml</span></td><td class="td-price"><span class="eur">77.56 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="94.08"><td class="td-code">1521</td><td class="td-spec"><span class="spec-main">1.0-2.0mm</span><span class="spec-sub">1.0ml</span></td><td class="td-price"><span class="eur">94.08 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="129.66"><td class="td-code">1522</td><td class="td-spec"><span class="spec-main">1.0-2.0mm</span><span class="spec-sub">2.0ml</span></td><td class="td-price"><span class="eur">129.66 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="223.96"><td class="td-code">1525</td><td class="td-spec"><span class="spec-main">1.0-2.0mm</span><span class="spec-sub">5.0ml</span></td><td class="td-price"><span class="eur">223.96 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- cerabone® plus -->
+<div class="accordion" id="acc-cerabone-plus">
+  <div class="acc-header bone" onclick="toggleAcc('cerabone-plus')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/03/ceraboneplus_1200x800-1.webp" alt="cerabone plus"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name bone">cerabone® plus</div>
+      <div class="acc-meta">4製品 ／ cerabone® with hyaluronate</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="acc-subtotal" id="sub-cerabone-plus">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body bone" id="body-cerabone-plus">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="bone" data-price="77.56"><td class="td-code">1810</td><td class="td-spec"><span class="spec-main">0.5-1.0mm</span><span class="spec-sub">0.5ml</span></td><td class="td-price"><span class="eur">77.56 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="102.56"><td class="td-code">1811</td><td class="td-spec"><span class="spec-main">0.5-1.0mm</span><span class="spec-sub">1.0ml</span></td><td class="td-price"><span class="eur">102.56 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="77.56"><td class="td-code">1820</td><td class="td-spec"><span class="spec-main">1.0-2.0mm</span><span class="spec-sub">0.5ml</span></td><td class="td-price"><span class="eur">77.56 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="94.08"><td class="td-code">1821</td><td class="td-spec"><span class="spec-main">1.0-2.0mm</span><span class="spec-sub">1.0ml</span></td><td class="td-price"><span class="eur">94.08 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- maxresorb® -->
+<div class="accordion" id="acc-maxresorb">
+  <div class="acc-header bone" onclick="toggleAcc('maxresorb')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/01/maxresorb_02_2400.jpg" alt="maxresorb"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name bone">maxresorb®</div>
+      <div class="acc-meta">4製品 ／ Biphasic calcium phosphate (synthetic)</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="acc-subtotal" id="sub-maxresorb">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body bone" id="body-maxresorb">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="bone" data-price="58.36"><td class="td-code">20005</td><td class="td-spec"><span class="spec-main">0.5-1.0mm</span><span class="spec-sub">0.5ml</span></td><td class="td-price"><span class="eur">58.36 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="78.98"><td class="td-code">20010</td><td class="td-spec"><span class="spec-main">0.5-1.0mm</span><span class="spec-sub">1.0ml</span></td><td class="td-price"><span class="eur">78.98 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="58.36"><td class="td-code">20105</td><td class="td-spec"><span class="spec-main">0.8-1.5mm</span><span class="spec-sub">0.5ml</span></td><td class="td-price"><span class="eur">58.36 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="114.34"><td class="td-code">20120</td><td class="td-spec"><span class="spec-main">0.8-1.5mm</span><span class="spec-sub">2.0ml</span></td><td class="td-price"><span class="eur">114.34 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- maxgraft® cancellous granules -->
+<div class="accordion" id="acc-maxgraft-can">
+  <div class="acc-header bone" onclick="toggleAcc('maxgraft-can')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/02/maxgraft_NEU_2400.jpg" alt="maxgraft cancellous"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name bone">maxgraft® cancellous granules</div>
+      <div class="acc-meta">4製品 ／ Processed human allograft</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="acc-subtotal" id="sub-maxgraft-can">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body bone" id="body-maxgraft-can">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="bone" data-price="168.56"><td class="td-code">30005</td><td class="td-spec"><span class="spec-main">&lt;2.0mm</span><span class="spec-sub">0.5ml</span></td><td class="td-price"><span class="eur">168.56 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="246.36"><td class="td-code">30010</td><td class="td-spec"><span class="spec-main">&lt;2.0mm</span><span class="spec-sub">1.0ml</span></td><td class="td-price"><span class="eur">246.36 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="324.16"><td class="td-code">30020</td><td class="td-spec"><span class="spec-main">&lt;2.0mm</span><span class="spec-sub">2.0ml</span></td><td class="td-price"><span class="eur">324.16 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="479.76"><td class="td-code">30040</td><td class="td-spec"><span class="spec-main">&lt;2.0mm</span><span class="spec-sub">4.0ml</span></td><td class="td-price"><span class="eur">479.76 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- maxgraft® cortico-cancellous granules -->
+<div class="accordion" id="acc-maxgraft-cc">
+  <div class="acc-header bone" onclick="toggleAcc('maxgraft-cc')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/02/maxgraft_NEU_2400.jpg" alt="maxgraft cortico-cancellous"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name bone">maxgraft® cortico-cancellous granules</div>
+      <div class="acc-meta">4製品 ／ Processed human allograft</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="acc-subtotal" id="sub-maxgraft-cc">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body bone" id="body-maxgraft-cc">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="bone" data-price="127.30"><td class="td-code">31005</td><td class="td-spec"><span class="spec-main">&lt;2.0mm</span><span class="spec-sub">0.5ml</span></td><td class="td-price"><span class="eur">127.30 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="186.24"><td class="td-code">31010</td><td class="td-spec"><span class="spec-main">&lt;2.0mm</span><span class="spec-sub">1.0ml</span></td><td class="td-price"><span class="eur">186.24 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="247.54"><td class="td-code">31020</td><td class="td-spec"><span class="spec-main">&lt;2.0mm</span><span class="spec-sub">2.0ml</span></td><td class="td-price"><span class="eur">247.54 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="351.28"><td class="td-code">31040</td><td class="td-spec"><span class="spec-main">&lt;2.0mm</span><span class="spec-sub">4.0ml</span></td><td class="td-price"><span class="eur">351.28 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- maxgraft® bonering -->
+<div class="accordion" id="acc-bonering">
+  <div class="acc-header bone" onclick="toggleAcc('bonering')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/01/maxgraft_rem.jpg" alt="maxgraft bonering"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name bone">maxgraft® bonering</div>
+      <div class="acc-meta">3製品 ／ Simultaneous augmentation &amp; implant</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="acc-subtotal" id="sub-bonering">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body bone" id="body-bonering">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="bone" data-price="577.84"><td class="td-code">33160</td><td class="td-spec"><span class="spec-main">Ø6×Ø3.3×10mm</span></td><td class="td-price"><span class="eur">577.84 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="577.84"><td class="td-code">33170</td><td class="td-spec"><span class="spec-main">Ø7×Ø3.3×10mm</span></td><td class="td-price"><span class="eur">577.84 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="bone" data-price="577.84"><td class="td-code">33174</td><td class="td-spec"><span class="spec-main">Ø7×Ø4.1×10mm</span></td><td class="td-price"><span class="eur">577.84 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- maxgraft® cortico -->
+<div class="accordion" id="acc-cortico">
+  <div class="acc-header bone" onclick="toggleAcc('cortico')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/01/maxgraft_cortico_2400.jpg" alt="maxgraft cortico"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name bone">maxgraft® cortico</div>
+      <div class="acc-meta">1製品 ／ Shell technique bone augmentation</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="acc-subtotal" id="sub-cortico">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body bone" id="body-cortico">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="bone" data-price="422.00"><td class="td-code">31251</td><td class="td-spec"><span class="spec-main">25×10×1mm</span></td><td class="td-price"><span class="eur">422.00 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 膜カテゴリ -->
+<div class="cat-group-label mem">🔬 メンブレン（Membranes）</div>
+
+<!-- Jason® membrane -->
+<div class="accordion" id="acc-jason">
+  <div class="acc-header mem" onclick="toggleAcc('jason')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/01/jasonmembrane_2400.jpg" alt="Jason membrane"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>🔬</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name mem">Jason® membrane</div>
+      <div class="acc-meta">3製品 ／ Native pericardium membrane</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="acc-subtotal" id="sub-jason">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body mem" id="body-jason">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="mem" data-price="117.30"><td class="td-code">681520</td><td class="td-spec"><span class="spec-main">15×20mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">117.30 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="mem" data-price="143.82"><td class="td-code">682030</td><td class="td-spec"><span class="spec-main">20×30mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">143.82 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="mem" data-price="222.78"><td class="td-code">683040</td><td class="td-spec"><span class="spec-main">30×40mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">222.78 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- NOVAMag® SHIELD -->
+<div class="accordion" id="acc-shield">
+  <div class="acc-header mem" onclick="toggleAcc('shield')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2024/10/novamag_shield_2400.webp" alt="NOVAMag SHIELD"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>🔬</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name mem">NOVAMag® SHIELD</div>
+      <div class="acc-meta">1製品 ／ Resorbable magnesium shield</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="new-badge">NEW</span>
+      <span class="acc-subtotal" id="sub-shield">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body mem" id="body-shield">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="mem" data-price="69.00"><td class="td-code">721020</td><td class="td-spec"><span class="spec-main">XS 10×20mm</span><span class="spec-sub">1 SHIELD</span></td><td class="td-price"><span class="eur">69.00 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- NOVAMag® membrane -->
+<div class="accordion" id="acc-novamag">
+  <div class="acc-header mem" onclick="toggleAcc('novamag')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/01/novamag_membrane_2400.jpg" alt="NOVAMag membrane"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>🔬</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name mem">NOVAMag® membrane</div>
+      <div class="acc-meta">3製品 ／ Resorbable magnesium membrane</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="new-badge">NEW</span>
+      <span class="acc-subtotal" id="sub-novamag">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body mem" id="body-novamag">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="mem" data-price="98.00"><td class="td-code">721520</td><td class="td-spec"><span class="spec-main">S 15×20mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">98.00 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="mem" data-price="214.50"><td class="td-code">722030</td><td class="td-spec"><span class="spec-main">M 20×30mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">214.50 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="mem" data-price="275.00"><td class="td-code">723040</td><td class="td-spec"><span class="spec-main">L 30×40mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">275.00 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- collprotect® membrane -->
+<div class="accordion" id="acc-collprotect">
+  <div class="acc-header mem" onclick="toggleAcc('collprotect')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/01/collprotect_2400.jpg" alt="collprotect"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>🔬</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name mem">collprotect® membrane</div>
+      <div class="acc-meta">3製品 ／ Native porcine dermal collagen</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="acc-subtotal" id="sub-collprotect">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body mem" id="body-collprotect">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="mem" data-price="100.80"><td class="td-code">601520</td><td class="td-spec"><span class="spec-main">15×20mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">100.80 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="mem" data-price="123.06"><td class="td-code">602030</td><td class="td-spec"><span class="spec-main">20×30mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">123.06 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="mem" data-price="190.96"><td class="td-code">603040</td><td class="td-spec"><span class="spec-main">30×40mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">190.96 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- permamem® -->
+<div class="accordion" id="acc-permamem">
+  <div class="acc-header mem" onclick="toggleAcc('permamem')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/01/permamem_2400.jpg" alt="permamem"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>🔬</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name mem">permamem®</div>
+      <div class="acc-meta">3製品 ／ High-density PTFE barrier membrane</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="acc-subtotal" id="sub-permamem">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body mem" id="body-permamem">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="mem" data-price="62.40"><td class="td-code">801520</td><td class="td-spec"><span class="spec-main">15×20mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">62.40 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="mem" data-price="87.84"><td class="td-code">802030</td><td class="td-spec"><span class="spec-main">20×30mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">87.84 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="mem" data-price="125.96"><td class="td-code">803040</td><td class="td-spec"><span class="spec-main">30×40mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">125.96 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- その他カテゴリ -->
+<div class="cat-group-label other">🩹 軟組織 ／ インストゥルメント（Soft Tissue &amp; Instruments）</div>
+
+<!-- collacone® -->
+<div class="accordion" id="acc-collacone">
+  <div class="acc-header other" onclick="toggleAcc('collacone')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2024/02/collacone_2400-1.webp" alt="collacone"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name other">collacone®</div>
+      <div class="acc-meta">1製品 ／ Collagen cone for extraction sockets</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="acc-subtotal" id="sub-collacone">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body other" id="body-collacone">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="other" data-price="99.02"><td class="td-code">511112</td><td class="td-spec"><span class="spec-main">H16mm / top11mm / bot7mm</span><span class="spec-sub">12個入（個別滅菌）</span></td><td class="td-price"><span class="eur">99.02 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- collafleece® -->
+<div class="accordion" id="acc-collafleece">
+  <div class="acc-header other" onclick="toggleAcc('collafleece')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2024/02/collafleece_2400.webp" alt="collafleece"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name other">collafleece®</div>
+      <div class="acc-meta">1製品 ／ Resorbable collagen sponge</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="acc-subtotal" id="sub-collafleece">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body other" id="body-collafleece">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="other" data-price="120.00"><td class="td-code">512212</td><td class="td-spec"><span class="spec-main">20×20mm</span><span class="spec-sub">12個入</span></td><td class="td-price"><span class="eur">120.00 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- colliprotect® membrane -->
+<div class="accordion" id="acc-colliprotect">
+  <div class="acc-header mem" onclick="toggleAcc('colliprotect')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/01/collprotect_membrane_2400.jpg" alt="colliprotect membrane"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name mem">colliprotect® membrane</div>
+      <div class="acc-meta">3製品 ／ Native collagen membrane</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="acc-subtotal" id="sub-colliprotect">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body mem" id="body-colliprotect">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="mem" data-price="100.80"><td class="td-code">601520</td><td class="td-spec"><span class="spec-main">15×20mm</span><span class="spec-sub">1 membrane</span></td><td class="td-price"><span class="eur">100.80 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="mem" data-price="123.06"><td class="td-code">602030</td><td class="td-spec"><span class="spec-main">20×30mm</span><span class="spec-sub">1 membrane</span></td><td class="td-price"><span class="eur">123.06 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="mem" data-price="190.96"><td class="td-code">603040</td><td class="td-spec"><span class="spec-main">30×40mm</span><span class="spec-sub">1 membrane</span></td><td class="td-price"><span class="eur">190.96 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- mucoderm® -->
+<div class="accordion" id="acc-mucoderm">
+  <div class="acc-header other" onclick="toggleAcc('mucoderm')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/01/mucoderm_2400.jpg" alt="mucoderm"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name other">mucoderm®</div>
+      <div class="acc-meta">3製品 ／ Acellular dermal collagen matrix</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="acc-subtotal" id="sub-mucoderm">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body other" id="body-mucoderm">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="other" data-price="162.68"><td class="td-code">701520</td><td class="td-spec"><span class="spec-main">15×20mm</span><span class="spec-sub">1 matrix</span></td><td class="td-price"><span class="eur">162.68 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="other" data-price="209.82"><td class="td-code">702030</td><td class="td-spec"><span class="spec-main">20×30mm</span><span class="spec-sub">1 matrix</span></td><td class="td-price"><span class="eur">209.82 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="other" data-price="318.26"><td class="td-code">703040</td><td class="td-spec"><span class="spec-main">30×40mm</span><span class="spec-sub">1 matrix</span></td><td class="td-price"><span class="eur">318.26 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- mucoderm® soft tissue punch -->
+<div class="accordion" id="acc-mucpunch">
+  <div class="acc-header other" onclick="toggleAcc('mucpunch')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/01/mucoderm_2400.jpg" alt="mucoderm punch"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name other">mucoderm® soft tissue punch</div>
+      <div class="acc-meta">1製品 ／ Soft tissue punch instrument</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="new-badge">NEW</span>
+      <span class="acc-subtotal" id="sub-mucpunch">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body other" id="body-mucpunch">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="other" data-price="70.72"><td class="td-code">710210</td><td class="td-spec"><span class="spec-main">Ø10mm</span><span class="spec-sub">1 punch</span></td><td class="td-price"><span class="eur">70.72 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Titan pin set -->
+<div class="accordion" id="acc-titan">
+  <div class="acc-header other" onclick="toggleAcc('titan')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/01/titanpinset_2400.jpg" alt="titan pin set"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name other">Titan pin set / Titan pins</div>
+      <div class="acc-meta">2製品 ／ Membrane fixation</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="acc-subtotal" id="sub-titan">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body other" id="body-titan">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="other" data-price="353.64"><td class="td-code">440000</td><td class="td-spec"><span class="spec-main">applicator + dispenser + pins 3mm×10</span></td><td class="td-price"><span class="eur">353.64 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="other" data-price="106.08"><td class="td-code">440310</td><td class="td-spec"><span class="spec-main">titan pins 3mm</span><span class="spec-sub">10本入</span></td><td class="td-price"><span class="eur">106.08 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- botiss grafter -->
+<div class="accordion" id="acc-grafter">
+  <div class="acc-header other" onclick="toggleAcc('grafter')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/08/botiss_grafter_2400.jpg" alt="botiss grafter"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name other">botiss grafter（顆粒状骨補填材用）</div>
+      <div class="acc-meta">1製品 ／ Applicator for bone substitute materials</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="acc-subtotal" id="sub-grafter">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body other" id="body-grafter">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="other" data-price="15.00"><td class="td-code">550001</td><td class="td-spec"><span class="spec-main">1 x botiss grafter</span></td><td class="td-price"><span class="eur">15.00 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- NOVAMag® Instrument Set -->
+<div class="accordion" id="acc-novainst-set">
+  <div class="acc-header other" onclick="toggleAcc('novainst-set')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2024/10/novamag_instruments_2400.webp" alt="NOVAMag Instrument Set"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name other">NOVAMag® Instrument Set</div>
+      <div class="acc-meta">1製品 ／ Safety cutter + sculptor + scissors + steri wash tray</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="new-badge">NEW</span>
+      <span class="acc-subtotal" id="sub-novainst-set">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body other" id="body-novainst-set">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="other" data-price="369.66"><td class="td-code">BT1001S2</td><td class="td-spec"><span class="spec-main">Instrument Set</span><span class="spec-sub">cutter + sculptor + scissors + tray</span></td><td class="td-price"><span class="eur">369.66 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- NOVAMag® Instruments（単品） -->
+<div class="accordion" id="acc-novainst">
+  <div class="acc-header other" onclick="toggleAcc('novainst')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2024/10/novamag_instruments_2400.webp" alt="NOVAMag Instruments"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name other">NOVAMag® Instruments（単品）</div>
+      <div class="acc-meta">4製品 ／ Set購入者向け単品販売</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="acc-subtotal" id="sub-novainst">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body other" id="body-novainst">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="other" data-price="103.98"><td class="td-code">BT1001</td><td class="td-spec"><span class="spec-main">1 x safety cutter</span></td><td class="td-price"><span class="eur">103.98 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="other" data-price="56.32"><td class="td-code">BT1002</td><td class="td-spec"><span class="spec-main">1 x sculptor</span></td><td class="td-price"><span class="eur">56.32 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="other" data-price="56.32"><td class="td-code">BT1003</td><td class="td-spec"><span class="spec-main">1 x scissors</span></td><td class="td-price"><span class="eur">56.32 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="other" data-price="153.04"><td class="td-code">BT1005</td><td class="td-spec"><span class="spec-main">1 x steri wash tray</span></td><td class="td-price"><span class="eur">153.04 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 備考 -->
+<div class="section-label" style="margin-top:20px">📝 備考</div>
+<div class="remarks-card">
+  <textarea id="remarks" placeholder="配送に関するご要望、その他特記事項をご記入ください"></textarea>
+</div>
+
+<!-- 注意事項 -->
+<div class="order-notes">
+  <strong>📦 送料について</strong><br>
+  <div class="threshold-row" style="margin-top:6px">
+    <span class="threshold-chip green">✓ 800€以上 → 送料無料</span>
+    <span class="threshold-chip yellow">△ 400〜799€ → 送料半額負担</span>
+    <span class="threshold-chip red">✗ 400€未満 → 送料全額負担</span>
+  </div>
+  <div style="margin-top:8px; font-size:10.5px; color:#92400e; line-height:1.8;">
+    ※ 送料はDHL実費 ／ 為替レートは弊社カード決済前月レート ／ 立替納税・消費税はお客様負担 ／ クレカ決済のみ
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<!-- ===== STICKY BOTTOM ===== -->
+<div class="sticky-total">
+  <div class="total-left">
+    <div class="total-info">
+      <span class="total-label">製品ご注文総額</span>
+      <span class="total-eur" id="grand-eur">€ 0.00</span>
+      <span class="total-jpy" id="grand-jpy">¥ 0</span>
+    </div>
+    <div id="shipping-badge" class="shipping-badge neutral">送料を確認</div>
+  </div>
+  <div class="action-btns">
+    <button class="btn btn-send"  id="btnSend" onclick="sendOrder()">✉ 注文を送信</button>
+    <button class="btn btn-copy"  onclick="copyOrder()">📋 コピー</button>
+    <button class="btn btn-hist"  onclick="openHist()">🕘 履歴</button>
+    <button class="btn btn-reset" onclick="resetAll()">🔄 リセット</button>
+  </div>
+</div>
+
+<!-- ===== COPY TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== HISTORY PANEL ===== -->
+<div class="hist-overlay" id="histOverlay" onclick="closeHistOutside(event)">
+  <div class="hist-panel">
+    <div class="hist-header">
+      <h3>🕘 購入履歴</h3>
+      <button class="hist-close" onclick="closeHist()">✕</button>
+    </div>
+    <div class="hist-body" id="histBody"></div>
+  </div>
+</div>
+
+<script>
+const HIST_KEY = 'botiss_order_history';
+const ADMIN_PASS = 'botiss2026';  // 管理者パスワード（変更可能）
+
+// ===== 管理者レート変更 =====
+function showAdminModal() {
+  document.getElementById('adminOverlay').classList.add('show');
+  document.getElementById('adminPass').value = '';
+  document.getElementById('adminPass').focus();
+}
+function hideAdminModal() {
+  document.getElementById('adminOverlay').classList.remove('show');
+}
+function unlockRate() {
+  const pass = document.getElementById('adminPass').value;
+  if (pass === ADMIN_PASS) {
+    const rateInput = document.getElementById('rate');
+    rateInput.classList.remove('locked');
+    rateInput.removeAttribute('readonly');
+    rateInput.focus();
+    hideAdminModal();
+    document.querySelector('.rate-lock-btn').textContent = '🔓 編集中';
+    document.querySelector('.rate-lock-btn').classList.add('unlocked');
+  } else {
+    document.getElementById('adminPass').style.borderColor = '#ef4444';
+    document.getElementById('adminPass').placeholder = 'パスワードが違います';
+    document.getElementById('adminPass').value = '';
+  }
+}
+
+// ===== EmailJS設定 =====
+// ※ 下記の3つのIDをEmailJSダッシュボードから取得して設定してください
+const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY';    // EmailJS > Account > Public Key
+const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';    // EmailJS > Email Services > Service ID
+const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // EmailJS > Email Templates > Template ID
+const NOTIFY_EMAIL = 'sssshiono@gmail.com';       // 注文通知の送信先
+
+(function() {
+  if (typeof emailjs !== 'undefined') {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+  }
+})();
+
+// ===== 初期化 =====
+document.getElementById('f-date').valueAsDate = new Date();
+updateAllJpy();
+
+// ===== アコーディオン =====
+function toggleAcc(id) {
+  const header = document.querySelector('#acc-' + id + ' .acc-header');
+  const body   = document.getElementById('body-' + id);
+  const isOpen = body.classList.contains('open');
+  header.classList.toggle('open', !isOpen);
+  body.classList.toggle('open', !isOpen);
+}
+
+// ===== 数量変更 =====
+function chg(btn, delta) {
+  const numEl = btn.parentElement.querySelector('.q-num');
+  const row   = btn.closest('tr');
+  const acc   = btn.closest('.accordion');
+  let v = parseInt(numEl.textContent) + delta;
+  if (v < 0) v = 0;
+  numEl.textContent = v;
+  numEl.className   = 'q-num' + (v > 0 ? ' nonzero' : '');
+
+  const rate  = parseFloat(document.getElementById('rate').value) || 0;
+  const price = parseFloat(row.dataset.price) || 0;
+  const jpyEl = row.querySelector('.jpy');
+  if (jpyEl) {
+    if (v > 0) {
+      jpyEl.textContent = '小計 ¥' + Math.round(price * v * rate).toLocaleString();
+      jpyEl.className = 'jpy line-total';
+    } else {
+      jpyEl.textContent = rate > 0 ? '¥' + Math.round(price * rate).toLocaleString() : '¥—';
+      jpyEl.className = 'jpy';
+    }
+  }
+
+  // activeクラスを確実にリセットしてから付け直す
+  row.classList.toggle('active', v > 0);
+  updateSubtotal(acc);
+  updateGrandTotal();
+}
+
+// ===== カテゴリ小計 =====
+function updateSubtotal(accDiv) {
+  const id    = accDiv.id.replace('acc-', '');
+  const subEl = document.getElementById('sub-' + id);
+  const rate  = parseFloat(document.getElementById('rate').value) || 0;
+  let sub = 0;
+  accDiv.querySelectorAll('tr[data-price]').forEach(function(row) {
+    const qty   = parseInt(row.querySelector('.q-num').textContent) || 0;
+    const price = parseFloat(row.dataset.price) || 0;
+    sub += qty * price;
+  });
+  if (sub > 0) {
+    const jpy = Math.round(sub * rate);
+    subEl.innerHTML = '€' + sub.toFixed(2) + '<br><small style="font-size:10px;color:#888;">¥' + jpy.toLocaleString() + '</small>';
+    subEl.className = 'acc-subtotal nonzero';
+  } else {
+    subEl.textContent = '–';
+    subEl.className   = 'acc-subtotal';
+  }
+}
+
+// ===== 合計更新 =====
+function updateGrandTotal() {
+  let total = 0;
+  const rate = parseFloat(document.getElementById('rate').value) || 0;
+  document.querySelectorAll('tr[data-price]').forEach(function(row) {
+    const qty   = parseInt(row.querySelector('.q-num').textContent) || 0;
+    const price = parseFloat(row.dataset.price) || 0;
+    total += qty * price;
+  });
+
+  const eurEl   = document.getElementById('grand-eur');
+  const jpyEl   = document.getElementById('grand-jpy');
+  const badgeEl = document.getElementById('shipping-badge');
+
+  eurEl.textContent = '€ ' + total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  jpyEl.textContent = '¥ ' + Math.round(total * rate).toLocaleString();
+
+  if (total === 0) {
+    eurEl.className = 'total-eur';
+    badgeEl.textContent = '送料を確認';
+    badgeEl.className = 'shipping-badge neutral';
+  } else if (total >= 800) {
+    eurEl.className = 'total-eur threshold-over';
+    badgeEl.textContent = '✓ 800€以上 — 送料無料';
+    badgeEl.className = 'shipping-badge free';
+  } else if (total >= 400) {
+    eurEl.className = 'total-eur threshold-mid';
+    badgeEl.textContent = '△ 400〜799€ — 送料半額';
+    badgeEl.className = 'shipping-badge half';
+  } else {
+    eurEl.className = 'total-eur threshold-under';
+    badgeEl.textContent = '✗ 400€未満 — 送料全額';
+    badgeEl.className = 'shipping-badge full';
+  }
+}
+
+// ===== 全JPY更新（レート変更時） =====
+function updateAllJpy() {
+  const rate = parseFloat(document.getElementById('rate').value) || 0;
+  document.querySelectorAll('tr[data-price]').forEach(function(row) {
+    const price = parseFloat(row.dataset.price) || 0;
+    const jpyEl = row.querySelector('.jpy');
+    const qty   = parseInt(row.querySelector('.q-num').textContent) || 0;
+    if (jpyEl) {
+      if (qty > 0) {
+        jpyEl.textContent = '小計 ¥' + Math.round(price * qty * rate).toLocaleString();
+        jpyEl.className = 'jpy line-total';
+      } else {
+        jpyEl.textContent = rate > 0 ? '¥' + Math.round(price * rate).toLocaleString() : '¥—';
+        jpyEl.className = 'jpy';
+      }
+    }
+  });
+  document.querySelectorAll('.accordion').forEach(function(acc) { updateSubtotal(acc); });
+  updateGrandTotal();
+}
+
+// ===== データ収集 =====
+function collectData() {
+  const rate = parseFloat(document.getElementById('rate').value) || 0;
+  const info = {
+    date:    document.getElementById('f-date').value,
+    tel:     document.getElementById('f-tel').value,
+    clinic:  document.getElementById('f-clinic').value,
+    doctor:  document.getElementById('f-doctor').value,
+    address: document.getElementById('f-address').value,
+    email:   document.getElementById('f-email').value,
+    remarks: document.getElementById('remarks').value,
+    rate:    rate
+  };
+  const items = [];
+  document.querySelectorAll('tr[data-price]').forEach(function(row) {
+    const qty = parseInt(row.querySelector('.q-num').textContent) || 0;
+    if (qty > 0) {
+      const code     = row.querySelector('.td-code').textContent.trim();
+      const specMain = row.querySelector('.spec-main').textContent.trim();
+      const specSub  = row.querySelector('.spec-sub') ? row.querySelector('.spec-sub').textContent.trim() : '';
+      const price    = parseFloat(row.dataset.price);
+      const cat      = row.closest('.accordion').querySelector('.acc-name').textContent.trim();
+      items.push({
+        cat:          cat,
+        code:         code,
+        specMain:     specMain,
+        specSub:      specSub,
+        price:        price,
+        qty:          qty,
+        subtotalEur:  (price * qty).toFixed(2),
+        subtotalJpy:  Math.round(price * qty * rate)
+      });
+    }
+  });
+  const totalEur = items.reduce(function(s, i) { return s + parseFloat(i.subtotalEur); }, 0).toFixed(2);
+  const totalJpy = items.reduce(function(s, i) { return s + i.subtotalJpy; }, 0);
+  return { info: info, items: items, totalEur: totalEur, totalJpy: totalJpy };
+}
+
+// ===== 注文テキスト生成 =====
+function buildOrderText(d) {
+  const lines = [];
+  lines.push('【botiss製品ご注文】');
+  lines.push('注文日：' + (d.info.date || '—'));
+  lines.push('医院名：' + (d.info.clinic || '—'));
+  lines.push('担当者：' + (d.info.doctor || '—'));
+  lines.push('住　所：' + (d.info.address || '—'));
+  lines.push('TEL　：' + (d.info.tel || '—'));
+  lines.push('E-mail：' + (d.info.email || '—'));
+  lines.push('');
+  lines.push('─────────────────────');
+  lines.push('【注文明細】');
+  d.items.forEach(function(it) {
+    const spec = it.specSub ? it.specMain + ' ' + it.specSub : it.specMain;
+    lines.push('[' + it.code + '] ' + it.cat + '  ' + spec + '  × ' + it.qty + '  €' + it.subtotalEur + '（¥' + it.subtotalJpy.toLocaleString() + '）');
+  });
+  lines.push('─────────────────────');
+  lines.push('合　計：€' + d.totalEur + '（¥' + d.totalJpy.toLocaleString() + '）');
+  lines.push('為替レート：1€ = ' + d.info.rate + '円');
+  if (d.info.remarks) {
+    lines.push('');
+    lines.push('【備考】');
+    lines.push(d.info.remarks);
+  }
+  return lines.join('\n');
+}
+
+// ===== クリップボードコピー =====
+function copyOrder() {
+  const d = collectData();
+  if (!d.items.length) {
+    showToast('⚠ 注文製品が選択されていません');
+    return;
+  }
+  const text = buildOrderText(d);
+  navigator.clipboard.writeText(text).then(function() {
+    showToast('✓ 注文内容をコピーしました');
+  }).catch(function() {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('✓ 注文内容をコピーしました');
+  });
+}
+
+// ===== トースト通知 =====
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(function() { el.classList.remove('show'); }, 2500);
+}
+
+// ===== リセット =====
+function resetAll() {
+  if (!confirm('入力内容をすべてリセットしますか？\n（現在の注文内容は履歴に保存されます）')) return;
+  // リセット前に履歴保存
+  saveHistory(collectData());
+
+  document.querySelectorAll('tr[data-price]').forEach(function(row) {
+    const numEl = row.querySelector('.q-num');
+    numEl.textContent = '0';
+    numEl.className = 'q-num';
+    row.classList.remove('active');
+  });
+  document.querySelectorAll('.acc-subtotal').forEach(function(el) {
+    el.textContent = '–';
+    el.className = 'acc-subtotal';
+  });
+  ['f-tel', 'f-clinic', 'f-doctor', 'f-address', 'f-email', 'remarks'].forEach(function(id) {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('f-date').valueAsDate = new Date();
+  updateAllJpy();
+}
+
+// ===== 履歴保存 =====
+function saveHistory(d) {
+  if (!d.items.length) return;
+  const hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
+  hist.unshift({
+    id:       Date.now(),
+    savedAt:  new Date().toLocaleString('ja-JP'),
+    clinic:   d.info.clinic,
+    doctor:   d.info.doctor,
+    date:     d.info.date,
+    rate:     d.info.rate,
+    totalEur: d.totalEur,
+    totalJpy: d.totalJpy,
+    items:    d.items
+  });
+  if (hist.length > 50) hist.pop();
+  localStorage.setItem(HIST_KEY, JSON.stringify(hist));
+}
+
+// ===== 履歴パネル =====
+function openHist() {
+  const hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
+  const body = document.getElementById('histBody');
+  if (!hist.length) {
+    body.innerHTML = '<div class="hist-empty">📭 まだ購入履歴がありません<br><small>リセット時に自動保存されます</small></div>';
+  } else {
+    body.innerHTML = hist.map(function(h) {
+      const safeClinic = escHtml(h.clinic || '');
+      const safeDoctor = escHtml(h.doctor || '');
+      const rows = h.items.slice(0, 5).map(function(it) {
+        const spec = it.specSub ? it.specMain + ' ' + it.specSub : it.specMain;
+        return escHtml('[' + it.code + '] ' + it.cat + ' ' + spec + ' × ' + it.qty);
+      }).join('<br>');
+      const more = h.items.length > 5 ? '<br>…他 ' + (h.items.length - 5) + ' 製品' : '';
+      return '<div class="hist-item">' +
+        '<div class="hist-item-header">' +
+          '<div>' +
+            '<div class="hist-item-title">' + (safeClinic || '（医院名なし）') + (safeDoctor ? ' / ' + safeDoctor : '') + '</div>' +
+            '<div class="hist-item-date">注文日：' + escHtml(h.date || '—') + ' ／ 保存：' + escHtml(h.savedAt) + '</div>' +
+          '</div>' +
+          '<div class="hist-item-total">€' + escHtml(String(h.totalEur)) + '<br><small style="font-size:10px;color:#888">¥' + Number(h.totalJpy).toLocaleString() + '</small></div>' +
+        '</div>' +
+        '<div class="hist-item-rows">' + rows + more + '</div>' +
+        '<div class="hist-item-btns">' +
+          '<button class="btn-reorder" onclick="reorder(' + h.id + ')">↩ この内容で再注文</button>' +
+          '<button class="btn-del-hist" onclick="deleteHist(' + h.id + ')">🗑 削除</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+  document.getElementById('histOverlay').classList.add('open');
+}
+
+// ===== XSS対策：HTMLエスケープ =====
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function closeHist() { document.getElementById('histOverlay').classList.remove('open'); }
+function closeHistOutside(e) { if (e.target.id === 'histOverlay') closeHist(); }
+
+function deleteHist(id) {
+  if (!confirm('この履歴を削除しますか？')) return;
+  let hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
+  hist = hist.filter(function(h) { return h.id !== id; });
+  localStorage.setItem(HIST_KEY, JSON.stringify(hist));
+  openHist();
+}
+
+function reorder(id) {
+  const hist  = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
+  const entry = hist.find(function(h) { return h.id === id; });
+  if (!entry) return;
+
+  // 現在の入力を全リセット
+  document.querySelectorAll('tr[data-price]').forEach(function(row) {
+    row.querySelector('.q-num').textContent = '0';
+    row.querySelector('.q-num').className = 'q-num';
+    row.classList.remove('active');
+  });
+
+  entry.items.forEach(function(it) {
+    const codeEl = Array.from(document.querySelectorAll('.td-code')).find(function(el) {
+      return el.textContent.trim() === it.code;
+    });
+    if (codeEl) {
+      const row   = codeEl.closest('tr');
+      const numEl = row.querySelector('.q-num');
+      numEl.textContent = it.qty;
+      numEl.className   = 'q-num nonzero';
+      row.classList.add('active');
+      const acc = row.closest('.accordion');
+      if (acc) {
+        acc.querySelector('.acc-header').classList.add('open');
+        acc.querySelector('.acc-body').classList.add('open');
+      }
+    }
+  });
+
+  document.getElementById('f-clinic').value = entry.clinic || '';
+  document.getElementById('f-doctor').value = entry.doctor || '';
+  document.getElementById('rate').value      = entry.rate || 184;
+  updateAllJpy();
+  closeHist();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===== メール送信 =====
+function sendOrder() {
+  const d = collectData();
+  if (!d.items.length) {
+    showToast('⚠ 注文製品が選択されていません');
+    return;
+  }
+  if (!d.info.clinic) {
+    showToast('⚠ 医院名を入力してください');
+    return;
+  }
+
+  const btn = document.getElementById('btnSend');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ 送信中...';
+
+  const orderText = buildOrderText(d);
+
+  // 送料ステータス
+  var shippingStatus = '400€未満 — 送料全額負担';
+  var totalNum = parseFloat(d.totalEur);
+  if (totalNum >= 800) shippingStatus = '800€以上 — 送料無料';
+  else if (totalNum >= 400) shippingStatus = '400〜799€ — 送料半額';
+
+  // 明細HTML（メールテンプレート用）
+  var itemsHtml = '<table style="border-collapse:collapse;width:100%;font-size:13px;">';
+  itemsHtml += '<tr style="background:#f0f4f8;"><th style="padding:8px;border:1px solid #ddd;text-align:left;">品番</th><th style="padding:8px;border:1px solid #ddd;text-align:left;">製品名</th><th style="padding:8px;border:1px solid #ddd;">仕様</th><th style="padding:8px;border:1px solid #ddd;text-align:center;">数量</th><th style="padding:8px;border:1px solid #ddd;text-align:right;">小計(EUR)</th><th style="padding:8px;border:1px solid #ddd;text-align:right;">小計(JPY)</th></tr>';
+  d.items.forEach(function(it) {
+    var spec = it.specSub ? it.specMain + ' ' + it.specSub : it.specMain;
+    itemsHtml += '<tr><td style="padding:6px 8px;border:1px solid #ddd;font-family:monospace;">' + escHtml(it.code) + '</td><td style="padding:6px 8px;border:1px solid #ddd;">' + escHtml(it.cat) + '</td><td style="padding:6px 8px;border:1px solid #ddd;">' + escHtml(spec) + '</td><td style="padding:6px 8px;border:1px solid #ddd;text-align:center;">' + it.qty + '</td><td style="padding:6px 8px;border:1px solid #ddd;text-align:right;">€' + it.subtotalEur + '</td><td style="padding:6px 8px;border:1px solid #ddd;text-align:right;">¥' + it.subtotalJpy.toLocaleString() + '</td></tr>';
+  });
+  itemsHtml += '</table>';
+
+  var templateParams = {
+    to_email:       NOTIFY_EMAIL,
+    order_date:     d.info.date || '—',
+    clinic_name:    d.info.clinic || '—',
+    doctor_name:    d.info.doctor || '—',
+    clinic_address: d.info.address || '—',
+    clinic_tel:     d.info.tel || '—',
+    client_email:   d.info.email || '—',
+    exchange_rate:  '1€ = ' + d.info.rate + '円',
+    items_html:     itemsHtml,
+    items_text:     orderText,
+    total_eur:      '€' + d.totalEur,
+    total_jpy:      '¥' + d.totalJpy.toLocaleString(),
+    shipping:       shippingStatus,
+    remarks:        d.info.remarks || 'なし',
+    item_count:     d.items.length + '製品'
+  };
+
+  if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+    // EmailJS未設定の場合はmailtoフォールバック
+    var subject = encodeURIComponent('【botiss注文】' + (d.info.clinic || '') + ' ' + (d.info.date || ''));
+    var body = encodeURIComponent(orderText);
+    window.location.href = 'mailto:' + NOTIFY_EMAIL + '?subject=' + subject + '&body=' + body;
+    btn.disabled = false;
+    btn.innerHTML = '✉ 注文を送信';
+    showToast('✓ メールアプリが開きます');
+    saveHistory(d);
+    return;
+  }
+
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+    .then(function() {
+      btn.disabled = false;
+      btn.innerHTML = '✉ 注文を送信';
+      showToast('✓ 注文メールを送信しました！');
+      saveHistory(d);
+    })
+    .catch(function(err) {
+      btn.disabled = false;
+      btn.innerHTML = '✉ 注文を送信';
+      console.error('EmailJS Error:', err);
+      showToast('✗ 送信失敗 — mailtoで再試行します');
+      // フォールバック: mailto
+      var subject = encodeURIComponent('【botiss注文】' + (d.info.clinic || '') + ' ' + (d.info.date || ''));
+      var body = encodeURIComponent(orderText);
+      window.location.href = 'mailto:' + NOTIFY_EMAIL + '?subject=' + subject + '&body=' + body;
+    });
+}
+</script>
+</body>
+</html>
