@@ -48,18 +48,24 @@ body {
   display: flex; align-items: center; justify-content: space-between;
 }
 .top-bar-left { display: flex; align-items: center; gap: 14px; }
-.top-bar-logo {
-  width: 44px; height: 44px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-}
-.top-bar-logo img { width: 100%; height: 100%; object-fit: contain; }
 .top-bar h1 { font-size: 16px; font-weight: 800; letter-spacing: -0.3px; color: #1a1a2e; }
-.top-bar .sub { font-size: 10.5px; color: #6b7280; margin-top: 2px; letter-spacing: 0.2px; }
 .top-bar-badge {
   background: #e6f7f6; color: #00796b; border: 1.5px solid #b2dfdb;
   border-radius: 20px; padding: 5px 13px; font-size: 10px; font-weight: 700;
   letter-spacing: 0.3px;
 }
+.top-bar-link {
+  background: linear-gradient(135deg, #00a19a, #00796b); color: white;
+  padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 700;
+  text-decoration: none; letter-spacing: 0.3px; white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,161,154,0.3); transition: opacity 0.2s;
+}
+.top-bar-link:hover { opacity: 0.85; }
+.top-bar-logo {
+  width: 150px; height: 50px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.top-bar-logo img { width: 100%; height: 100%; object-fit: contain; }
 .top-bar-accent {
   height: 3px; background: linear-gradient(90deg, #00a19a 0%, #4dd0c8 40%, #a8e6cf 70%, #f0f4f8 100%);
 }
@@ -152,6 +158,70 @@ body {
 .admin-modal .btn-cancel { background:#f3f4f6; color:#6b7280; }
 .admin-modal .btn-ok { background:#d97706; color:white; }
 
+/* ===== 注文確認モーダル ===== */
+.confirm-overlay {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5);
+  z-index:9999; align-items:center; justify-content:center; padding:16px;
+}
+.confirm-overlay.show { display:flex; }
+.confirm-modal {
+  background:white; border-radius:18px; width:100%; max-width:560px;
+  max-height:85vh; display:flex; flex-direction:column;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3); overflow:hidden;
+}
+.confirm-header {
+  background:linear-gradient(135deg, #00a19a, #4dd0c8);
+  color:white; padding:18px 24px; text-align:center;
+}
+.confirm-header h3 { font-size:16px; font-weight:800; }
+.confirm-header p { font-size:11px; opacity:0.85; margin-top:4px; }
+.confirm-body {
+  padding:20px 24px; overflow-y:auto; flex:1;
+  font-size:12.5px; line-height:1.8;
+}
+.confirm-section { margin-bottom:16px; }
+.confirm-section h4 {
+  font-size:11px; font-weight:800; color:#00796b;
+  border-bottom:2px solid #e0f2f1; padding-bottom:4px; margin-bottom:8px;
+  text-transform:uppercase; letter-spacing:0.5px;
+}
+.confirm-row { display:flex; justify-content:space-between; padding:2px 0; }
+.confirm-row .label { color:#6b7280; }
+.confirm-row .value { font-weight:600; text-align:right; }
+.confirm-item {
+  background:#f8fffe; border:1px solid #e0f2f1; border-radius:8px;
+  padding:8px 12px; margin-bottom:6px;
+}
+.confirm-item .item-name { font-weight:700; color:#1a1a2e; font-size:12px; }
+.confirm-item .item-detail { color:#6b7280; font-size:11px; margin-top:2px; }
+.confirm-item .item-price { font-weight:700; color:#b91c1c; text-align:right; font-size:12px; margin-top:2px; }
+.confirm-total {
+  background:linear-gradient(135deg, #f0fdf4, #e6f7f6);
+  border:2px solid #00a19a; border-radius:10px;
+  padding:12px 16px; text-align:center;
+}
+.confirm-total .total-eur { font-size:22px; font-weight:900; color:#00796b; }
+.confirm-total .total-jpy { font-size:14px; font-weight:700; color:#6b7280; }
+.confirm-total .total-shipping { font-size:11px; margin-top:4px; }
+.confirm-footer {
+  padding:14px 24px; border-top:1px solid #e5e7eb;
+  display:flex; gap:10px;
+}
+.confirm-footer button {
+  flex:1; padding:12px; border-radius:10px; font-size:13px; font-weight:700;
+  cursor:pointer; font-family:inherit; border:none; transition:opacity 0.2s;
+}
+.confirm-footer button:hover { opacity:0.85; }
+.confirm-footer .btn-back { background:#f3f4f6; color:#6b7280; }
+.confirm-footer .btn-confirm { background:linear-gradient(135deg, #00a19a, #00796b); color:white; }
+.confirm-status {
+  text-align:center; padding:40px 24px; display:none;
+}
+.confirm-status.show { display:block; }
+.confirm-status .status-icon { font-size:48px; margin-bottom:12px; }
+.confirm-status .status-msg { font-size:15px; font-weight:700; color:#1a1a2e; }
+.confirm-status .status-sub { font-size:11.5px; color:#6b7280; margin-top:6px; line-height:1.6; }
+
 /* ===== CATEGORY GROUP LABEL ===== */
 .cat-group-label {
   display: flex; align-items: center; gap: 10px;
@@ -207,6 +277,7 @@ body {
 .acc-name.mem   { color: var(--mem-dark); }
 .acc-name.other { color: var(--other-dark); }
 .acc-meta { font-size: 10px; color: var(--muted); margin-top: 3px; }
+.kana { display: block; font-size: 10.5px; font-weight: 600; color: #6b7280; margin-top: 1px; letter-spacing: 0.3px; }
 
 .acc-badge-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .new-badge {
@@ -416,13 +487,118 @@ body {
 @media (max-width: 520px) {
   .field-grid { grid-template-columns: 1fr; }
   .field-grid .full { grid-column: 1; }
-  .sticky-total { flex-direction: column; align-items: stretch; }
+  .sticky-total { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px 14px; }
   .action-btns  { flex-wrap: wrap; }
-  .btn { flex: 1 1 auto; justify-content: center; }
+  .btn { flex: 1 1 auto; justify-content: center; font-size: 11px; padding: 8px 10px; }
   .top-bar-badge { display: none; }
+  .top-bar-inner { padding: 10px 14px; }
+  .top-bar h1 { font-size: 14px; }
+  .top-bar .sub { font-size: 9.5px; }
+  .top-bar-logo { width: 60px; height: 32px; }
+  .top-bar-link { font-size: 10px; padding: 6px 12px; }
+  .container { padding: 14px 10px; }
+  .info-card { padding: 14px 14px; }
+  .acc-header { padding: 10px 12px; gap: 10px; }
+  .acc-img-wrap { width: 44px; height: 44px; }
+  .acc-name { font-size: 12px; }
+  .kana { font-size: 9.5px; }
+  .acc-meta { font-size: 9px; }
+  .acc-table thead th { padding: 6px 8px; font-size: 9px; }
+  .acc-table tbody td { font-size: 11px; }
+  .td-code { font-size: 10px; }
+  .td-price { min-width: auto; }
+  .eur { font-size: 12px; }
+  .jpy { font-size: 10px; }
+  .q-btn { width: 28px; height: 28px; font-size: 14px; }
+  .q-num { width: 28px; font-size: 13px; }
+  .rate-card { padding: 10px 14px; gap: 10px; }
+  .rate-card label { font-size: 11px; }
+  .rate-card input { width: 70px; font-size: 13px; padding: 6px 8px; }
+  .rate-note { font-size: 10px; }
+  .rate-lock-btn { font-size: 10px; padding: 4px 8px; }
+  .cat-group-label { font-size: 11px; padding: 8px 12px; }
+  .section-label { font-size: 10px; }
+  .total-eur { font-size: 20px; }
+  .total-jpy { font-size: 12px; }
+  /* 確認モーダル */
+  .confirm-modal { border-radius: 14px; max-height: 90vh; }
+  .confirm-header { padding: 14px 18px; }
+  .confirm-header h3 { font-size: 14px; }
+  .confirm-body { padding: 14px 16px; font-size: 12px; }
+  .confirm-footer { padding: 10px 16px; }
+  .confirm-footer button { padding: 10px; font-size: 12px; }
+  .confirm-total .total-eur { font-size: 18px; }
+  .order-notes { font-size: 11px; padding: 12px 14px; }
+  .upload-area { padding: 16px; }
+  .upload-preview img { max-width: 100%; }
+}
+
+/* ===== 同意書アップロード ===== */
+.upload-area {
+  border: 2px dashed #d0dce8; border-radius: 12px;
+  padding: 20px; text-align: center; cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  background: #fafcff;
+}
+.upload-area:hover { border-color: #00a19a; background: #f0fdfb; }
+.upload-area.has-file { border-color: #00a19a; border-style: solid; background: #f0fdfb; }
+.upload-area input[type="file"] { display: none; }
+.upload-icon { font-size: 28px; margin-bottom: 6px; }
+.upload-label { font-size: 12px; font-weight: 700; color: #00796b; }
+.upload-hint { font-size: 10px; color: #6b7280; margin-top: 4px; }
+.upload-preview {
+  margin-top: 10px; position: relative; display: inline-block;
+}
+.upload-preview img {
+  max-width: 200px; max-height: 160px; border-radius: 8px;
+  border: 1.5px solid #d0dce8; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.upload-remove {
+  position: absolute; top: -8px; right: -8px;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #ef4444; color: white; border: 2px solid white;
+  font-size: 12px; cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.upload-filename { font-size: 10px; color: #6b7280; margin-top: 6px; word-break: break-all; }
+
+/* ===== 製品ツールチップ ===== */
+.product-tooltip {
+  display: none; position: fixed; z-index: 9998;
+  background: #1a1a2e; color: white; border-radius: 12px;
+  padding: 14px 18px; max-width: 360px; width: 90vw;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  font-size: 12px; line-height: 1.7; pointer-events: none;
+  animation: tooltipFade 0.2s ease;
+}
+.product-tooltip.show { display: block; }
+.product-tooltip .tt-title {
+  font-size: 13px; font-weight: 800; color: #4dd0c8;
+  margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.15);
+  padding-bottom: 6px;
+}
+.product-tooltip .tt-body { color: #e2e8f0; }
+@keyframes tooltipFade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+/* スマホではタップで表示 */
+@media (max-width: 520px) {
+  .product-tooltip { max-width: 300px; font-size: 11px; padding: 12px 14px; }
 }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<!-- 注文確認モーダル -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-modal">
+    <div class="confirm-header">
+      <h3>注文内容の確認</h3>
+      <p>以下の内容で送信します。ご確認ください。</p>
+    </div>
+    <div class="confirm-body" id="confirmBody"></div>
+    <div class="confirm-footer" id="confirmFooter">
+      <button class="btn-back" onclick="closeConfirm()">戻る</button>
+      <button class="btn-confirm" onclick="confirmAndSend()">この内容で送信する</button>
+    </div>
+  </div>
+</div>
 </head>
 <body>
 
@@ -430,15 +606,14 @@ body {
   <div class="top-bar-inner">
     <div class="top-bar-left">
       <div class="top-bar-logo">
-        <img src="https://botiss.com/wp-content/uploads/2023/01/botiss-biomaterials-logo.svg" alt="botiss"
+        <img src="https://www.logosvgpng.com/wp-content/uploads/2021/09/botiss-biomaterials-gmbh-logo-vector.png" alt="botiss"
           onerror="this.parentElement.innerHTML='<span style=&quot;font-size:13px;font-weight:900;color:#00a19a&quot;>botiss</span>'">
       </div>
       <div>
         <h1>製品ご注文フォーム</h1>
-        <div class="sub">ウェビナー受講者様限定 ／ 数量を選んで注文を送信</div>
       </div>
     </div>
-    <div class="top-bar-badge">2025年10月 価格表</div>
+    <a href="https://botiss.com/" target="_blank" class="top-bar-link">botiss.com →</a>
   </div>
 </div>
 
@@ -472,6 +647,27 @@ body {
       <label>メールアドレス（返信先）</label>
       <input type="email" id="f-email" placeholder="yamada@clinic.jp" />
     </div>
+    <div class="field-group full">
+      <label>患者同意書</label>
+      <div class="upload-area" id="consentArea" onclick="document.getElementById('consentFile').click()">
+        <input type="file" id="consentFile" accept="image/*" onchange="handleUpload('consent', this)" />
+        <div id="consentPlaceholder">
+          <div class="upload-icon">📄</div>
+          <div class="upload-label">タップして同意書の写真を選択</div>
+          <div class="upload-hint">※ 必要枚数は注文後に担当者よりご連絡いたします</div>
+        </div>
+        <div id="consentPreview" style="display:none"></div>
+      </div>
+    </div>
+    <div class="field-group full">
+      <div class="upload-area" id="licenseArea" onclick="document.getElementById('licenseFile').click()" style="padding:12px;border-color:#e5e7eb;">
+        <input type="file" id="licenseFile" accept="image/*" onchange="handleUpload('license', this)" />
+        <div id="licensePlaceholder">
+          <div style="font-size:11px;"><span style="font-weight:800;color:#1a1a2e;">🪪 歯科医師免許（初回のみ）</span><span style="font-size:10px;color:#9ca3af;margin-left:8px;">タップして写真を選択</span></div>
+        </div>
+        <div id="licensePreview" style="display:none"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -482,7 +678,7 @@ body {
   <input type="number" id="rate" value="184" min="1" step="1" oninput="updateAllJpy()" class="locked" readonly />
   <label>円</label>
   <span class="rate-note">※ 2026年3月 適用レート（前月カード決済レート）</span>
-  <button class="rate-lock-btn" onclick="showAdminModal()">🔒 管理者変更</button>
+  <button class="rate-lock-btn" onclick="showAdminModal()" style="opacity:0;width:30px;height:30px;padding:0;border:none;cursor:default;">.</button>
 </div>
 
 <!-- 管理者パスワードモーダル -->
@@ -508,7 +704,7 @@ body {
         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name bone">cerabone®</div>
+      <div class="acc-name bone">cerabone®<span class="kana">セラボーン</span></div>
       <div class="acc-meta">8製品 ／ 100% pure bovine bone mineral</div>
     </div>
     <div class="acc-badge-area">
@@ -541,7 +737,7 @@ body {
         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name bone">cerabone® plus</div>
+      <div class="acc-name bone">cerabone® plus<span class="kana">セラボーン プラス</span></div>
       <div class="acc-meta">4製品 ／ cerabone® with hyaluronate</div>
     </div>
     <div class="acc-badge-area">
@@ -570,7 +766,7 @@ body {
         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name bone">maxresorb®</div>
+      <div class="acc-name bone">maxresorb®<span class="kana">マックスリゾルブ</span></div>
       <div class="acc-meta">4製品 ／ Biphasic calcium phosphate (synthetic)</div>
     </div>
     <div class="acc-badge-area">
@@ -599,7 +795,7 @@ body {
         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name bone">maxgraft® cancellous granules</div>
+      <div class="acc-name bone">maxgraft® cancellous granules<span class="kana">マックスグラフト キャンセラス</span></div>
       <div class="acc-meta">4製品 ／ Processed human allograft</div>
     </div>
     <div class="acc-badge-area">
@@ -628,7 +824,7 @@ body {
         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name bone">maxgraft® cortico-cancellous granules</div>
+      <div class="acc-name bone">maxgraft® cortico-cancellous granules<span class="kana">マックスグラフト コルティコキャンセラス</span></div>
       <div class="acc-meta">4製品 ／ Processed human allograft</div>
     </div>
     <div class="acc-badge-area">
@@ -657,7 +853,7 @@ body {
         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name bone">maxgraft® bonering</div>
+      <div class="acc-name bone">maxgraft® bonering<span class="kana">マックスグラフト ボーンリング</span></div>
       <div class="acc-meta">3製品 ／ Simultaneous augmentation &amp; implant</div>
     </div>
     <div class="acc-badge-area">
@@ -685,7 +881,7 @@ body {
         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name bone">maxgraft® cortico</div>
+      <div class="acc-name bone">maxgraft® cortico<span class="kana">マックスグラフト コルティコ</span></div>
       <div class="acc-meta">1製品 ／ Shell technique bone augmentation</div>
     </div>
     <div class="acc-badge-area">
@@ -714,7 +910,7 @@ body {
         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>🔬</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name mem">Jason® membrane</div>
+      <div class="acc-name mem">Jason® membrane<span class="kana">ジェイソン メンブレン</span></div>
       <div class="acc-meta">3製品 ／ Native pericardium membrane</div>
     </div>
     <div class="acc-badge-area">
@@ -734,28 +930,57 @@ body {
   </div>
 </div>
 
-<!-- NOVAMag® SHIELD -->
-<div class="accordion" id="acc-shield">
-  <div class="acc-header mem" onclick="toggleAcc('shield')">
+<!-- colliprotect® membrane -->
+<div class="accordion" id="acc-colliprotect">
+  <div class="acc-header mem" onclick="toggleAcc('colliprotect')">
     <div class="acc-img-wrap">
-      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2024/10/novamag_shield_2400.webp" alt="NOVAMag SHIELD"
-        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>🔬</span>'">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/01/collprotect_membrane_2400.jpg" alt="colliprotect membrane"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name mem">NOVAMag® SHIELD</div>
-      <div class="acc-meta">1製品 ／ Resorbable magnesium shield</div>
+      <div class="acc-name mem">colliprotect® membrane<span class="kana">コリプロテクト メンブレン</span></div>
+      <div class="acc-meta">3製品 ／ Native collagen membrane</div>
     </div>
     <div class="acc-badge-area">
-      <span class="new-badge">NEW</span>
-      <span class="acc-subtotal" id="sub-shield">–</span>
+      <span class="acc-subtotal" id="sub-colliprotect">–</span>
       <span class="acc-arrow">▾</span>
     </div>
   </div>
-  <div class="acc-body mem" id="body-shield">
+  <div class="acc-body mem" id="body-colliprotect">
     <table class="acc-table">
       <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
       <tbody>
-        <tr class="mem" data-price="69.00"><td class="td-code">721020</td><td class="td-spec"><span class="spec-main">XS 10×20mm</span><span class="spec-sub">1 SHIELD</span></td><td class="td-price"><span class="eur">69.00 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="mem" data-price="100.80"><td class="td-code">601520</td><td class="td-spec"><span class="spec-main">15×20mm</span><span class="spec-sub">1 membrane</span></td><td class="td-price"><span class="eur">100.80 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="mem" data-price="123.06"><td class="td-code">602030</td><td class="td-spec"><span class="spec-main">20×30mm</span><span class="spec-sub">1 membrane</span></td><td class="td-price"><span class="eur">123.06 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="mem" data-price="190.96"><td class="td-code">603040</td><td class="td-spec"><span class="spec-main">30×40mm</span><span class="spec-sub">1 membrane</span></td><td class="td-price"><span class="eur">190.96 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- permamem® -->
+<div class="accordion" id="acc-permamem">
+  <div class="acc-header mem" onclick="toggleAcc('permamem')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/01/permamem_2400.jpg" alt="permamem"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>🔬</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name mem">permamem®<span class="kana">パーマメン</span></div>
+      <div class="acc-meta">3製品 ／ High-density PTFE barrier membrane</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="acc-subtotal" id="sub-permamem">–</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body mem" id="body-permamem">
+    <table class="acc-table">
+      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
+      <tbody>
+        <tr class="mem" data-price="62.40"><td class="td-code">801520</td><td class="td-spec"><span class="spec-main">15×20mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">62.40 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="mem" data-price="87.84"><td class="td-code">802030</td><td class="td-spec"><span class="spec-main">20×30mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">87.84 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="mem" data-price="125.96"><td class="td-code">803040</td><td class="td-spec"><span class="spec-main">30×40mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">125.96 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
       </tbody>
     </table>
   </div>
@@ -769,7 +994,7 @@ body {
         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>🔬</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name mem">NOVAMag® membrane</div>
+      <div class="acc-name mem">NOVAMag® membrane<span class="kana">ノバマグ メンブレン</span></div>
       <div class="acc-meta">3製品 ／ Resorbable magnesium membrane</div>
     </div>
     <div class="acc-badge-area">
@@ -790,64 +1015,35 @@ body {
   </div>
 </div>
 
-<!-- collprotect® membrane -->
-<div class="accordion" id="acc-collprotect">
-  <div class="acc-header mem" onclick="toggleAcc('collprotect')">
+<!-- NOVAMag® SHIELD -->
+<div class="accordion" id="acc-shield">
+  <div class="acc-header mem" onclick="toggleAcc('shield')">
     <div class="acc-img-wrap">
-      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/01/collprotect_2400.jpg" alt="collprotect"
+      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2024/10/novamag_shield_2400.webp" alt="NOVAMag SHIELD"
         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>🔬</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name mem">collprotect® membrane</div>
-      <div class="acc-meta">3製品 ／ Native porcine dermal collagen</div>
+      <div class="acc-name mem">NOVAMag® SHIELD<span class="kana">ノバマグ シールド</span></div>
+      <div class="acc-meta">1製品 ／ Resorbable magnesium shield</div>
     </div>
     <div class="acc-badge-area">
-      <span class="acc-subtotal" id="sub-collprotect">–</span>
+      <span class="new-badge">NEW</span>
+      <span class="acc-subtotal" id="sub-shield">–</span>
       <span class="acc-arrow">▾</span>
     </div>
   </div>
-  <div class="acc-body mem" id="body-collprotect">
+  <div class="acc-body mem" id="body-shield">
     <table class="acc-table">
       <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
       <tbody>
-        <tr class="mem" data-price="100.80"><td class="td-code">601520</td><td class="td-spec"><span class="spec-main">15×20mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">100.80 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
-        <tr class="mem" data-price="123.06"><td class="td-code">602030</td><td class="td-spec"><span class="spec-main">20×30mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">123.06 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
-        <tr class="mem" data-price="190.96"><td class="td-code">603040</td><td class="td-spec"><span class="spec-main">30×40mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">190.96 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
+        <tr class="mem" data-price="69.00"><td class="td-code">721020</td><td class="td-spec"><span class="spec-main">XS 10×20mm</span><span class="spec-sub">1 SHIELD</span></td><td class="td-price"><span class="eur">69.00 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<!-- permamem® -->
-<div class="accordion" id="acc-permamem">
-  <div class="acc-header mem" onclick="toggleAcc('permamem')">
-    <div class="acc-img-wrap">
-      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/01/permamem_2400.jpg" alt="permamem"
-        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>🔬</span>'">
-    </div>
-    <div class="acc-info">
-      <div class="acc-name mem">permamem®</div>
-      <div class="acc-meta">3製品 ／ High-density PTFE barrier membrane</div>
-    </div>
-    <div class="acc-badge-area">
-      <span class="acc-subtotal" id="sub-permamem">–</span>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </div>
-  <div class="acc-body mem" id="body-permamem">
-    <table class="acc-table">
-      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
-      <tbody>
-        <tr class="mem" data-price="62.40"><td class="td-code">801520</td><td class="td-spec"><span class="spec-main">15×20mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">62.40 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
-        <tr class="mem" data-price="87.84"><td class="td-code">802030</td><td class="td-spec"><span class="spec-main">20×30mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">87.84 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
-        <tr class="mem" data-price="125.96"><td class="td-code">803040</td><td class="td-spec"><span class="spec-main">30×40mm</span><span class="spec-sub">membrane</span></td><td class="td-price"><span class="eur">125.96 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- その他カテゴリ -->
-<div class="cat-group-label other">🩹 軟組織 ／ インストゥルメント（Soft Tissue &amp; Instruments）</div>
+<!-- 軟組織カテゴリ -->
+<div class="cat-group-label other">🩹 軟組織マトリックス（Soft Tissue）</div>
 
 <!-- collacone® -->
 <div class="accordion" id="acc-collacone">
@@ -857,7 +1053,7 @@ body {
         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name other">collacone®</div>
+      <div class="acc-name other">collacone®<span class="kana">コラコーン</span></div>
       <div class="acc-meta">1製品 ／ Collagen cone for extraction sockets</div>
     </div>
     <div class="acc-badge-area">
@@ -883,7 +1079,7 @@ body {
         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name other">collafleece®</div>
+      <div class="acc-name other">collafleece®<span class="kana">コラフリース</span></div>
       <div class="acc-meta">1製品 ／ Resorbable collagen sponge</div>
     </div>
     <div class="acc-badge-area">
@@ -901,34 +1097,6 @@ body {
   </div>
 </div>
 
-<!-- colliprotect® membrane -->
-<div class="accordion" id="acc-colliprotect">
-  <div class="acc-header mem" onclick="toggleAcc('colliprotect')">
-    <div class="acc-img-wrap">
-      <img class="acc-img" src="https://botiss.com/wp-content/uploads/2023/01/collprotect_membrane_2400.jpg" alt="colliprotect membrane"
-        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
-    </div>
-    <div class="acc-info">
-      <div class="acc-name mem">colliprotect® membrane</div>
-      <div class="acc-meta">3製品 ／ Native collagen membrane</div>
-    </div>
-    <div class="acc-badge-area">
-      <span class="acc-subtotal" id="sub-colliprotect">–</span>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </div>
-  <div class="acc-body mem" id="body-colliprotect">
-    <table class="acc-table">
-      <thead><tr><th>品番</th><th>サイズ / 仕様</th><th class="th-r">単価</th><th class="th-c">数量</th></tr></thead>
-      <tbody>
-        <tr class="mem" data-price="100.80"><td class="td-code">601520</td><td class="td-spec"><span class="spec-main">15×20mm</span><span class="spec-sub">1 membrane</span></td><td class="td-price"><span class="eur">100.80 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
-        <tr class="mem" data-price="123.06"><td class="td-code">602030</td><td class="td-spec"><span class="spec-main">20×30mm</span><span class="spec-sub">1 membrane</span></td><td class="td-price"><span class="eur">123.06 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
-        <tr class="mem" data-price="190.96"><td class="td-code">603040</td><td class="td-spec"><span class="spec-main">30×40mm</span><span class="spec-sub">1 membrane</span></td><td class="td-price"><span class="eur">190.96 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
 <!-- mucoderm® -->
 <div class="accordion" id="acc-mucoderm">
   <div class="acc-header other" onclick="toggleAcc('mucoderm')">
@@ -937,7 +1105,7 @@ body {
         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name other">mucoderm®</div>
+      <div class="acc-name other">mucoderm®<span class="kana">ムコダーム</span></div>
       <div class="acc-meta">3製品 ／ Acellular dermal collagen matrix</div>
     </div>
     <div class="acc-badge-area">
@@ -965,7 +1133,7 @@ body {
         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name other">mucoderm® soft tissue punch</div>
+      <div class="acc-name other">mucoderm® soft tissue punch<span class="kana">ムコダーム パンチ</span></div>
       <div class="acc-meta">1製品 ／ Soft tissue punch instrument</div>
     </div>
     <div class="acc-badge-area">
@@ -984,6 +1152,9 @@ body {
   </div>
 </div>
 
+<!-- インストゥルメントカテゴリ -->
+<div class="cat-group-label other">🔧 インストゥルメント（Instruments）</div>
+
 <!-- Titan pin set -->
 <div class="accordion" id="acc-titan">
   <div class="acc-header other" onclick="toggleAcc('titan')">
@@ -992,7 +1163,7 @@ body {
         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name other">Titan pin set / Titan pins</div>
+      <div class="acc-name other">Titan pin set / Titan pins<span class="kana">チタンピンセット</span></div>
       <div class="acc-meta">2製品 ／ Membrane fixation</div>
     </div>
     <div class="acc-badge-area">
@@ -1019,7 +1190,7 @@ body {
         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name other">botiss grafter（顆粒状骨補填材用）</div>
+      <div class="acc-name other">botiss grafter<span class="kana">ボティス グラフター（顆粒状骨補填材用）</span></div>
       <div class="acc-meta">1製品 ／ Applicator for bone substitute materials</div>
     </div>
     <div class="acc-badge-area">
@@ -1045,7 +1216,7 @@ body {
         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name other">NOVAMag® Instrument Set</div>
+      <div class="acc-name other">NOVAMag® Instrument Set<span class="kana">ノバマグ インストゥルメントセット</span></div>
       <div class="acc-meta">1製品 ／ Safety cutter + sculptor + scissors + steri wash tray</div>
     </div>
     <div class="acc-badge-area">
@@ -1072,7 +1243,7 @@ body {
         onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
     </div>
     <div class="acc-info">
-      <div class="acc-name other">NOVAMag® Instruments（単品）</div>
+      <div class="acc-name other">NOVAMag® Instruments<span class="kana">ノバマグ インストゥルメント（単品）</span></div>
       <div class="acc-meta">4製品 ／ Set購入者向け単品販売</div>
     </div>
     <div class="acc-badge-area">
@@ -1126,7 +1297,6 @@ body {
   </div>
   <div class="action-btns">
     <button class="btn btn-send"  id="btnSend" onclick="sendOrder()">✉ 注文を送信</button>
-    <button class="btn btn-copy"  onclick="copyOrder()">📋 コピー</button>
     <button class="btn btn-hist"  onclick="openHist()">🕘 履歴</button>
     <button class="btn btn-reset" onclick="resetAll()">🔄 リセット</button>
   </div>
@@ -1176,22 +1346,156 @@ function unlockRate() {
   }
 }
 
-// ===== EmailJS設定 =====
-// ※ 下記の3つのIDをEmailJSダッシュボードから取得して設定してください
-const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY';    // EmailJS > Account > Public Key
-const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';    // EmailJS > Email Services > Service ID
-const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // EmailJS > Email Templates > Template ID
+// ===== メール送信設定 =====
 const NOTIFY_EMAIL = 'sssshiono@gmail.com';       // 注文通知の送信先
-
-(function() {
-  if (typeof emailjs !== 'undefined') {
-    emailjs.init(EMAILJS_PUBLIC_KEY);
-  }
-})();
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxHECrzNydy_NWvGP8VuV2HcudAS5JtM-urtEdcVatYFV7JlvcvxIb71bxkYNDIWZ_-yA/exec';
 
 // ===== 初期化 =====
 document.getElementById('f-date').valueAsDate = new Date();
+
+// ===== 顧客情報の自動復元 =====
+(function() {
+  var saved = JSON.parse(localStorage.getItem('botiss_user_info') || '{}');
+  if (saved.tel) document.getElementById('f-tel').value = saved.tel;
+  if (saved.clinic) document.getElementById('f-clinic').value = saved.clinic;
+  if (saved.doctor) document.getElementById('f-doctor').value = saved.doctor;
+  if (saved.address) document.getElementById('f-address').value = saved.address;
+  if (saved.email) document.getElementById('f-email').value = saved.email;
+})();
+
+function saveUserInfo() {
+  var info = {
+    tel: document.getElementById('f-tel').value,
+    clinic: document.getElementById('f-clinic').value,
+    doctor: document.getElementById('f-doctor').value,
+    address: document.getElementById('f-address').value,
+    email: document.getElementById('f-email').value
+  };
+  localStorage.setItem('botiss_user_info', JSON.stringify(info));
+}
+
 updateAllJpy();
+
+// ===== 製品ツールチップ =====
+var PRODUCT_TIPS = {
+  'cerabone': '牛骨由来の天然骨補填材。独自の1200°C高温焼成処理により有機成分を完全除去した100%純粋な骨ミネラル。高い多孔性と粗面構造により血液・タンパク質の吸着に優れ、インプラント周囲やサイナスリフトなどの骨造成に広く使用。',
+  'cerabone-plus': 'cerabone®にヒアルロン酸ナトリウムを配合。水和すると顆粒同士が粘着し「スティッキーボーン」を形成するため操作性が大幅に向上。ヒアルロン酸の血管新生促進効果により、より早い血管形成と軟組織治癒を実現。',
+  'maxresorb': '60% HA / 40% β-TCPからなる完全合成の二相性リン酸カルシウム骨補填材。約80%の高い多孔率とナノ構造表面を持ち、約2-3年で患者自身の骨に置換。動物由来材料を避けたい場合に適した代替選択肢。',
+  'maxgraft-can': 'ヒト同種骨（生体ドナーの大腿骨頭由来）を特殊なAllotec®プロセスで処理した骨補填材。天然の骨構造とコラーゲンを保持し、患者自身の骨への完全なリモデリングが可能。3-4ヶ月で安定した骨統合が得られる。',
+  'maxgraft-cc': 'ヒト同種骨由来の皮質海綿骨顆粒。天然の骨構造を保持しつつ、皮質骨と海綿骨の両方の特性を持ち、構造的サポートと骨形成の場を提供。',
+  'bonering': 'ヒト同種骨から製造されたプレファブリケーテッド海綿骨リング。骨造成とインプラント埋入を一回の手術で同時に行えるワンステージ術式を実現し、治療期間を数ヶ月短縮。',
+  'cortico': 'ヒト大腿骨骨幹部由来の完全石灰化皮質骨プレート。シェルテクニックに使用され、骨欠損部に固定して内部に顆粒状骨補填材を充填することで、自家骨ブロック採取の合併症を回避しながら歯槽堤造成を行える。',
+  'jason': 'ブタ心膜由来の非架橋コラーゲンメンブレン。ハニカム状の多層構造により優れた引裂き耐性と自然な長期バリア機能を発揮。非常に薄く、GBR/GTR手術における組織再生のオールラウンダー。',
+  'colliprotect': 'ブタ真皮由来の天然コラーゲンメンブレン。毛包由来の天然ポアが早期の血管新生を促進しながら軟組織の侵入を防止。乾燥時は硬く自立し、水和後は柔軟に表面に適合する中期バリア機能を持つ。',
+  'permamem': '高密度PTFE製の非吸収性メンブレン。厚さ約0.08mmと極めて薄いながら優れた360°引裂き耐性と細菌・細胞遮断性を持つ。開放創治癒（オープンヒーリング）が可能で、抜歯窩・歯槽堤保存に最適。',
+  'novamag': '純マグネシウム金属製の吸収性メンブレン。機械的強度と生体吸収性を両立した革新的なGBR用バリア材。8-16週間で体内に完全吸収され、二次手術による除去が不要。',
+  'shield': '純マグネシウム金属製の吸収性シールド。頬側・口蓋側の骨壁欠損に対してフラップレスアプローチで使用可能。メンブレン固定が不要で、抜歯即時の歯槽骨再生（シールドテクニック）に特化。',
+  'mucoderm': 'ブタ真皮由来の脱細胞化3Dコラーゲンマトリックス。自家結合組織移植の代替材料として、角化歯肉増大や歯肉退縮の被覆などの軟組織造成に使用。高い多孔性により迅速な血管新生と組織統合を促進。',
+  'mucpunch': 'mucoderm®の円形パンチング用器具。ソフトティシューパンチを使用して必要なサイズのmucoderm®を効率的に採取。',
+  'collacone': '天然コラーゲン製の湿潤安定性コーン型創傷被覆材。抜歯窩に適合する形状で、血餅の安定化と局所止血を支援。約2-4週間で完全吸収。',
+  'collafleece': 'ブタ真皮由来の湿潤安定性コラーゲンスポンジ。高い止血効果を持ち、血小板接着により血液凝固を促進。生検採取部位や抜歯窩の被覆に使用。約2-4週間で吸収。',
+  'titan': 'メンブレン固定用のチタンピンセット。アプリケーターとディスペンサーにより、メンブレンの正確な固定をワンハンドで行える。',
+  'grafter': '骨補填材の水和と欠損部への注入を効率的に行うための専用アプリケーター。シリンジ型で各種骨補填材やその混合物に対応。',
+  'novainst-set': 'NOVAMag®メンブレン・シールド専用インストゥルメントセット。safety cutter、sculptor、scissors、洗浄トレイのフルセットで、マグネシウムメンブレンの適切な加工・成形に必要なすべての器具を含む。',
+  'novainst': 'NOVAMag® Instrument Setの各器具の単品販売。safety cutter（カット用）、sculptor（成形用）、scissors（裁断用）、steri wash tray（洗浄用）を個別に購入可能。'
+};
+
+// ツールチップ要素を作成
+var tooltipEl = document.createElement('div');
+tooltipEl.className = 'product-tooltip';
+tooltipEl.id = 'productTooltip';
+document.body.appendChild(tooltipEl);
+
+// PCホバー＆スマホタップ
+document.querySelectorAll('.acc-header').forEach(function(header) {
+  var accId = header.closest('.accordion').id.replace('acc-', '');
+  if (!PRODUCT_TIPS[accId]) return;
+  var nameEl = header.querySelector('.acc-name');
+  var productName = nameEl ? nameEl.textContent.split('\n')[0].trim() : accId;
+
+  // PC: ホバー
+  header.addEventListener('mouseenter', function(e) {
+    if (window.innerWidth < 520) return; // スマホはスキップ
+    showTooltip(accId, productName, e);
+  });
+  header.addEventListener('mousemove', function(e) {
+    if (window.innerWidth < 520) return;
+    positionTooltip(e);
+  });
+  header.addEventListener('mouseleave', function() {
+    hideTooltip();
+  });
+
+  // スマホ: 長押し
+  var pressTimer;
+  header.addEventListener('touchstart', function(e) {
+    pressTimer = setTimeout(function() {
+      showTooltip(accId, productName, e.touches[0]);
+      tooltipEl.style.left = '50%';
+      tooltipEl.style.transform = 'translateX(-50%)';
+      tooltipEl.style.top = '20%';
+    }, 500);
+  });
+  header.addEventListener('touchend', function() {
+    clearTimeout(pressTimer);
+    setTimeout(hideTooltip, 3000); // 3秒後に自動非表示
+  });
+  header.addEventListener('touchmove', function() {
+    clearTimeout(pressTimer);
+  });
+});
+
+function showTooltip(id, name, e) {
+  tooltipEl.innerHTML = '<div class="tt-title">' + escHtml(name) + '</div><div class="tt-body">' + escHtml(PRODUCT_TIPS[id]) + '</div>';
+  tooltipEl.classList.add('show');
+  positionTooltip(e);
+}
+function positionTooltip(e) {
+  var x = (e.clientX || e.pageX) + 16;
+  var y = (e.clientY || e.pageY) + 16;
+  var tw = tooltipEl.offsetWidth;
+  var th = tooltipEl.offsetHeight;
+  if (x + tw > window.innerWidth - 10) x = window.innerWidth - tw - 10;
+  if (y + th > window.innerHeight - 10) y = y - th - 32;
+  tooltipEl.style.left = x + 'px';
+  tooltipEl.style.top = y + 'px';
+  tooltipEl.style.transform = 'none';
+}
+function hideTooltip() {
+  tooltipEl.classList.remove('show');
+}
+
+// ===== 書類アップロード（共通） =====
+var uploadData = { consent: { data: null, name: '' }, license: { data: null, name: '' } };
+
+function handleUpload(type, input) {
+  var file = input.files[0];
+  if (!file) return;
+  uploadData[type].name = file.name;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    uploadData[type].data = e.target.result;
+    var preview = document.getElementById(type + 'Preview');
+    preview.innerHTML = '<div class="upload-preview">' +
+      '<img src="' + uploadData[type].data + '" alt="' + type + '" />' +
+      '<button class="upload-remove" onclick="event.stopPropagation();removeUpload(\'' + type + '\')">✕</button>' +
+      '</div>' +
+      '<div class="upload-filename">' + escHtml(uploadData[type].name) + '</div>';
+    preview.style.display = 'block';
+    document.getElementById(type + 'Placeholder').style.display = 'none';
+    document.getElementById(type + 'Area').classList.add('has-file');
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeUpload(type) {
+  uploadData[type] = { data: null, name: '' };
+  document.getElementById(type + 'File').value = '';
+  document.getElementById(type + 'Preview').style.display = 'none';
+  document.getElementById(type + 'Preview').innerHTML = '';
+  document.getElementById(type + 'Placeholder').style.display = 'block';
+  document.getElementById(type + 'Area').classList.remove('has-file');
+}
 
 // ===== アコーディオン =====
 function toggleAcc(id) {
@@ -1351,28 +1655,45 @@ function collectData() {
 // ===== 注文テキスト生成 =====
 function buildOrderText(d) {
   const lines = [];
-  lines.push('【botiss製品ご注文】');
-  lines.push('注文日：' + (d.info.date || '—'));
-  lines.push('医院名：' + (d.info.clinic || '—'));
-  lines.push('担当者：' + (d.info.doctor || '—'));
-  lines.push('住　所：' + (d.info.address || '—'));
-  lines.push('TEL　：' + (d.info.tel || '—'));
-  lines.push('E-mail：' + (d.info.email || '—'));
+  lines.push('━━━━━━━━━━━━━━━━━━━━');
+  lines.push('　botiss製品 ご注文内容');
+  lines.push('━━━━━━━━━━━━━━━━━━━━');
   lines.push('');
-  lines.push('─────────────────────');
-  lines.push('【注文明細】');
-  d.items.forEach(function(it) {
+  lines.push('■ 顧客情報');
+  lines.push('・注文日：' + (d.info.date || '—'));
+  lines.push('・医院名：' + (d.info.clinic || '—'));
+  lines.push('・担当医：' + (d.info.doctor || '—'));
+  lines.push('・住　所：' + (d.info.address || '—'));
+  lines.push('・TEL　：' + (d.info.tel || '—'));
+  lines.push('・E-mail：' + (d.info.email || '—'));
+  lines.push('');
+  lines.push('■ 注文内容');
+  d.items.forEach(function(it, i) {
     const spec = it.specSub ? it.specMain + ' ' + it.specSub : it.specMain;
-    lines.push('[' + it.code + '] ' + it.cat + '  ' + spec + '  × ' + it.qty + '  €' + it.subtotalEur + '（¥' + it.subtotalJpy.toLocaleString() + '）');
+    lines.push('　' + (i + 1) + '. ' + it.cat);
+    lines.push('　　品番：' + it.code);
+    lines.push('　　仕様：' + spec);
+    lines.push('　　数量：' + it.qty);
+    lines.push('　　小計：€' + it.subtotalEur + '（¥' + it.subtotalJpy.toLocaleString() + '）');
   });
-  lines.push('─────────────────────');
-  lines.push('合　計：€' + d.totalEur + '（¥' + d.totalJpy.toLocaleString() + '）');
-  lines.push('為替レート：1€ = ' + d.info.rate + '円');
+  lines.push('');
+  lines.push('■ 合計金額');
+  // 送料ステータス
+  var totalNum = parseFloat(d.totalEur);
+  var shippingText = '送料全額負担（400€未満）';
+  if (totalNum >= 800) shippingText = '送料無料（800€以上）';
+  else if (totalNum >= 400) shippingText = '送料半額負担（400〜799€）';
+  lines.push('・合計（EUR）：€' + d.totalEur);
+  lines.push('・合計（JPY）：¥' + d.totalJpy.toLocaleString());
+  lines.push('・為替レート：1€ = ' + d.info.rate + '円');
+  lines.push('・送料：' + shippingText);
   if (d.info.remarks) {
     lines.push('');
-    lines.push('【備考】');
-    lines.push(d.info.remarks);
+    lines.push('■ 備考');
+    lines.push('・' + d.info.remarks);
   }
+  lines.push('');
+  lines.push('━━━━━━━━━━━━━━━━━━━━');
   return lines.join('\n');
 }
 
@@ -1434,6 +1755,7 @@ function resetAll() {
 
 // ===== 履歴保存 =====
 function saveHistory(d) {
+  saveUserInfo(); // 顧客情報を保存
   if (!d.items.length) return;
   const hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
   hist.unshift({
@@ -1544,7 +1866,9 @@ function reorder(id) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ===== メール送信 =====
+// ===== 注文確認画面 =====
+var pendingOrder = null; // 送信待ちデータ
+
 function sendOrder() {
   const d = collectData();
   if (!d.items.length) {
@@ -1555,75 +1879,166 @@ function sendOrder() {
     showToast('⚠ 医院名を入力してください');
     return;
   }
+  pendingOrder = d;
+  showConfirmModal(d);
+}
 
-  const btn = document.getElementById('btnSend');
-  btn.disabled = true;
-  btn.innerHTML = '⏳ 送信中...';
+function showConfirmModal(d) {
+  var totalNum = parseFloat(d.totalEur);
+  var shippingText = '送料全額負担（400€未満）';
+  var shippingClass = 'color:#b91c1c';
+  if (totalNum >= 800) { shippingText = '送料無料（800€以上）'; shippingClass = 'color:#16a34a'; }
+  else if (totalNum >= 400) { shippingText = '送料半額負担（400〜799€）'; shippingClass = 'color:#d97706'; }
+
+  var html = '';
+
+  // 顧客情報
+  html += '<div class="confirm-section"><h4>顧客情報</h4>';
+  html += '<div class="confirm-row"><span class="label">注文日</span><span class="value">' + escHtml(d.info.date || '—') + '</span></div>';
+  html += '<div class="confirm-row"><span class="label">医院名</span><span class="value">' + escHtml(d.info.clinic || '—') + '</span></div>';
+  html += '<div class="confirm-row"><span class="label">担当医</span><span class="value">' + escHtml(d.info.doctor || '—') + '</span></div>';
+  html += '<div class="confirm-row"><span class="label">住所</span><span class="value">' + escHtml(d.info.address || '—') + '</span></div>';
+  html += '<div class="confirm-row"><span class="label">TEL</span><span class="value">' + escHtml(d.info.tel || '—') + '</span></div>';
+  html += '<div class="confirm-row"><span class="label">E-mail</span><span class="value">' + escHtml(d.info.email || '—') + '</span></div>';
+  html += '</div>';
+
+  // 注文内容
+  html += '<div class="confirm-section"><h4>注文内容（' + d.items.length + '件）</h4>';
+  d.items.forEach(function(it) {
+    var spec = it.specSub ? it.specMain + ' ' + it.specSub : it.specMain;
+    html += '<div class="confirm-item">';
+    html += '<div class="item-name">' + escHtml(it.cat) + '</div>';
+    html += '<div class="item-detail">品番: ' + escHtml(it.code) + ' ／ ' + escHtml(spec) + ' ／ 数量: ' + it.qty + '</div>';
+    html += '<div class="item-price">€' + it.subtotalEur + '（¥' + it.subtotalJpy.toLocaleString() + '）</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // 合計
+  html += '<div class="confirm-total">';
+  html += '<div class="total-eur">€ ' + d.totalEur + '</div>';
+  html += '<div class="total-jpy">¥ ' + d.totalJpy.toLocaleString() + '</div>';
+  html += '<div class="total-shipping" style="' + shippingClass + '">' + shippingText + '</div>';
+  html += '<div style="font-size:10px;color:#888;margin-top:4px;">為替レート：1€ = ' + d.info.rate + '円</div>';
+  html += '</div>';
+
+  if (d.info.remarks) {
+    html += '<div class="confirm-section" style="margin-top:14px"><h4>備考</h4>';
+    html += '<div style="color:#6b7280">' + escHtml(d.info.remarks) + '</div></div>';
+  }
+
+  // 書類の有無
+  html += '<div class="confirm-section" style="margin-top:14px"><h4>提出書類</h4>';
+  if (uploadData.license.data) {
+    html += '<div style="color:#16a34a;font-weight:700;">✓ 歯科医師免許 アップロード済</div>';
+  } else {
+    html += '<div style="color:#6b7280;">歯科医師免許：未アップロード（初回のみ必要）</div>';
+  }
+  if (uploadData.consent.data) {
+    html += '<div style="color:#16a34a;font-weight:700;margin-top:4px;">✓ 患者同意書 アップロード済</div>';
+  } else {
+    html += '<div style="color:#6b7280;margin-top:4px;">患者同意書：未アップロード（必要枚数は後日ご連絡）</div>';
+  }
+  html += '</div>';
+
+  document.getElementById('confirmBody').innerHTML = html;
+  document.getElementById('confirmFooter').style.display = 'flex';
+  document.getElementById('confirmOverlay').classList.add('show');
+}
+
+function closeConfirm() {
+  document.getElementById('confirmOverlay').classList.remove('show');
+  pendingOrder = null;
+}
+
+// ===== 確定送信（Google Apps Script） =====
+function confirmAndSend() {
+  if (!pendingOrder) return;
+  const d = pendingOrder;
+  const footer = document.getElementById('confirmFooter');
+  footer.innerHTML = '<button class="btn-confirm" disabled style="opacity:0.7">⏳ 送信中...</button>';
 
   const orderText = buildOrderText(d);
-
-  // 送料ステータス
-  var shippingStatus = '400€未満 — 送料全額負担';
   var totalNum = parseFloat(d.totalEur);
+  var shippingStatus = '400€未満 — 送料全額負担';
   if (totalNum >= 800) shippingStatus = '800€以上 — 送料無料';
   else if (totalNum >= 400) shippingStatus = '400〜799€ — 送料半額';
 
-  // 明細HTML（メールテンプレート用）
-  var itemsHtml = '<table style="border-collapse:collapse;width:100%;font-size:13px;">';
-  itemsHtml += '<tr style="background:#f0f4f8;"><th style="padding:8px;border:1px solid #ddd;text-align:left;">品番</th><th style="padding:8px;border:1px solid #ddd;text-align:left;">製品名</th><th style="padding:8px;border:1px solid #ddd;">仕様</th><th style="padding:8px;border:1px solid #ddd;text-align:center;">数量</th><th style="padding:8px;border:1px solid #ddd;text-align:right;">小計(EUR)</th><th style="padding:8px;border:1px solid #ddd;text-align:right;">小計(JPY)</th></tr>';
-  d.items.forEach(function(it) {
-    var spec = it.specSub ? it.specMain + ' ' + it.specSub : it.specMain;
-    itemsHtml += '<tr><td style="padding:6px 8px;border:1px solid #ddd;font-family:monospace;">' + escHtml(it.code) + '</td><td style="padding:6px 8px;border:1px solid #ddd;">' + escHtml(it.cat) + '</td><td style="padding:6px 8px;border:1px solid #ddd;">' + escHtml(spec) + '</td><td style="padding:6px 8px;border:1px solid #ddd;text-align:center;">' + it.qty + '</td><td style="padding:6px 8px;border:1px solid #ddd;text-align:right;">€' + it.subtotalEur + '</td><td style="padding:6px 8px;border:1px solid #ddd;text-align:right;">¥' + it.subtotalJpy.toLocaleString() + '</td></tr>';
-  });
-  itemsHtml += '</table>';
-
-  var templateParams = {
-    to_email:       NOTIFY_EMAIL,
-    order_date:     d.info.date || '—',
-    clinic_name:    d.info.clinic || '—',
-    doctor_name:    d.info.doctor || '—',
-    clinic_address: d.info.address || '—',
-    clinic_tel:     d.info.tel || '—',
-    client_email:   d.info.email || '—',
-    exchange_rate:  '1€ = ' + d.info.rate + '円',
-    items_html:     itemsHtml,
-    items_text:     orderText,
-    total_eur:      '€' + d.totalEur,
-    total_jpy:      '¥' + d.totalJpy.toLocaleString(),
-    shipping:       shippingStatus,
-    remarks:        d.info.remarks || 'なし',
-    item_count:     d.items.length + '製品'
+  var payload = {
+    to: NOTIFY_EMAIL,
+    customerEmail: d.info.email || '',
+    subject: '【botiss注文】' + (d.info.clinic || '') + ' ' + (d.info.date || ''),
+    body: orderText,
+    clinic: d.info.clinic || '—',
+    doctor: d.info.doctor || '—',
+    date: d.info.date || '—',
+    totalEur: '€' + d.totalEur,
+    totalJpy: '¥' + d.totalJpy.toLocaleString(),
+    shipping: shippingStatus,
+    consentImage: uploadData.consent.data || '',
+    consentFileName: uploadData.consent.name || '',
+    licenseImage: uploadData.license.data || '',
+    licenseFileName: uploadData.license.name || ''
   };
 
-  if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
-    // EmailJS未設定の場合はmailtoフォールバック
-    var subject = encodeURIComponent('【botiss注文】' + (d.info.clinic || '') + ' ' + (d.info.date || ''));
-    var body = encodeURIComponent(orderText);
-    window.location.href = 'mailto:' + NOTIFY_EMAIL + '?subject=' + subject + '&body=' + body;
-    btn.disabled = false;
-    btn.innerHTML = '✉ 注文を送信';
-    showToast('✓ メールアプリが開きます');
+  // Google Apps Script Web App へ送信
+  if (!GAS_URL || GAS_URL === 'YOUR_GAS_URL') {
+    // GAS未設定の場合：確認画面に表示＋クリップボードコピー
+    navigator.clipboard.writeText(orderText).catch(function(){});
+    var statusHtml = '<div class="confirm-status show">';
+    statusHtml += '<div class="status-icon">✓</div>';
+    statusHtml += '<div class="status-msg">注文内容をコピーしました</div>';
+    statusHtml += '<div class="status-sub">メール送信機能はセットアップ中です。<br>コピーした内容をメールに貼り付けて送信してください。</div>';
+    statusHtml += '</div>';
+    document.getElementById('confirmBody').innerHTML = statusHtml;
+    footer.innerHTML = '<button class="btn-confirm" onclick="closeConfirm()">閉じる</button>';
     saveHistory(d);
+    pendingOrder = null;
     return;
   }
 
-  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
-    .then(function() {
-      btn.disabled = false;
-      btn.innerHTML = '✉ 注文を送信';
-      showToast('✓ 注文メールを送信しました！');
-      saveHistory(d);
-    })
-    .catch(function(err) {
-      btn.disabled = false;
-      btn.innerHTML = '✉ 注文を送信';
-      console.error('EmailJS Error:', err);
-      showToast('✗ 送信失敗 — mailtoで再試行します');
-      // フォールバック: mailto
-      var subject = encodeURIComponent('【botiss注文】' + (d.info.clinic || '') + ' ' + (d.info.date || ''));
-      var body = encodeURIComponent(orderText);
-      window.location.href = 'mailto:' + NOTIFY_EMAIL + '?subject=' + subject + '&body=' + body;
-    });
+  // 隠しiframe + フォームで送信（CORS問題を回避）
+  var iframeName = 'gas_iframe_' + Date.now();
+  var iframe = document.createElement('iframe');
+  iframe.name = iframeName;
+  iframe.style.display = 'none';
+  document.body.appendChild(iframe);
+
+  var form = document.createElement('form');
+  form.method = 'POST';
+  form.action = GAS_URL;
+  form.target = iframeName;
+  form.style.display = 'none';
+
+  // payloadの各フィールドをhidden inputとして追加
+  Object.keys(payload).forEach(function(key) {
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;
+    input.value = payload[key];
+    form.appendChild(input);
+  });
+
+  document.body.appendChild(form);
+  form.submit();
+
+  // 送信完了表示
+  setTimeout(function() {
+    var statusHtml = '<div class="confirm-status show">';
+    statusHtml += '<div class="status-icon">✓</div>';
+    statusHtml += '<div class="status-msg">注文を送信しました！</div>';
+    statusHtml += '<div class="status-sub">担当者へ注文内容を送信しました。</div>';
+    statusHtml += '</div>';
+    document.getElementById('confirmBody').innerHTML = statusHtml;
+    footer.innerHTML = '<button class="btn-confirm" onclick="closeConfirm()">閉じる</button>';
+    saveHistory(d);
+    pendingOrder = null;
+    // クリーンアップ
+    setTimeout(function() {
+      document.body.removeChild(form);
+      document.body.removeChild(iframe);
+    }, 3000);
+  }, 2000);
 }
 </script>
 </body>
