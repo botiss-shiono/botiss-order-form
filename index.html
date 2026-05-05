@@ -649,24 +649,24 @@ body {
     </div>
     <div class="field-group full">
       <label>患者同意書（複数枚アップロード可）</label>
-      <div class="upload-area" id="consentArea" onclick="document.getElementById('consentFile').click()">
-        <input type="file" id="consentFile" accept="image/*" multiple onchange="handleMultiUpload('consent', this)" />
+      <label class="upload-area" id="consentArea" for="consentFile">
+        <input type="file" id="consentFile" accept="image/jpeg,image/jpg,image/png,image/heic,image/heif,image/webp" multiple onchange="handleMultiUpload('consent', this)" />
         <div id="consentPlaceholder">
           <div class="upload-icon">📄</div>
           <div class="upload-label">タップして同意書の写真を選択（複数選択可）</div>
-          <div class="upload-hint">※ 何枚でもまとめて選択可能 ／ 必要枚数は注文後にご連絡</div>
+          <div class="upload-hint">対応形式：JPEG / PNG / HEIC / WEBP ／ 何枚でもまとめて選択可能</div>
         </div>
         <div id="consentPreview" style="display:none"></div>
-      </div>
+      </label>
     </div>
     <div class="field-group full">
-      <div class="upload-area" id="licenseArea" onclick="document.getElementById('licenseFile').click()" style="padding:12px;border-color:#e5e7eb;">
-        <input type="file" id="licenseFile" accept="image/*" onchange="handleUpload('license', this)" />
+      <label class="upload-area" id="licenseArea" for="licenseFile" style="padding:12px;border-color:#e5e7eb;">
+        <input type="file" id="licenseFile" accept="image/jpeg,image/jpg,image/png,image/heic,image/heif,image/webp" onchange="handleUpload('license', this)" />
         <div id="licensePlaceholder">
-          <div style="font-size:11px;"><span style="font-weight:800;color:#1a1a2e;">🪪 歯科医師免許（初回のみ）</span><span style="font-size:10px;color:#9ca3af;margin-left:8px;">タップして写真を選択</span></div>
+          <div style="font-size:11px;"><span style="font-weight:800;color:#1a1a2e;">🪪 歯科医師免許（初回のみ）</span><span style="font-size:10px;color:#9ca3af;margin-left:8px;">タップして写真を選択（JPEG/PNG/HEIC）</span></div>
         </div>
         <div id="licensePreview" style="display:none"></div>
-      </div>
+      </label>
     </div>
   </div>
 </div>
@@ -1504,22 +1504,31 @@ function removeUpload(type) {
 
 // 複数ファイルアップロード（consent用）
 function handleMultiUpload(type, input) {
-  var files = input.files;
+  var files = Array.from(input.files);
   if (!files.length) return;
+  var total = files.length;
   var loaded = 0;
-  Array.from(files).forEach(function(file) {
+  files.forEach(function(file) {
     var reader = new FileReader();
     reader.onload = function(e) {
       uploadData[type].files.push({ data: e.target.result, name: file.name });
       loaded++;
-      if (loaded === files.length) {
+      if (loaded === total) {
         renderMultiPreview(type);
+        // 全部読み込み終わってから input をリセット
+        input.value = '';
+      }
+    };
+    reader.onerror = function() {
+      loaded++;
+      console.error('読み込み失敗:', file.name);
+      if (loaded === total) {
+        renderMultiPreview(type);
+        input.value = '';
       }
     };
     reader.readAsDataURL(file);
   });
-  // input をリセットして同じファイルでも再選択可能に
-  input.value = '';
 }
 
 function renderMultiPreview(type) {
