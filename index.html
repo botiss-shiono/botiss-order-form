@@ -2090,62 +2090,56 @@ function confirmAndSend() {
     return;
   }
 
-  // 隠しiframe + フォームで送信（CORS問題を回避）
-  var iframeName = 'gas_iframe_' + Date.now();
-  var iframe = document.createElement('iframe');
-  iframe.name = iframeName;
-  iframe.style.display = 'none';
-  document.body.appendChild(iframe);
-
-  var form = document.createElement('form');
-  form.method = 'POST';
-  form.action = GAS_URL;
-  form.target = iframeName;
-  form.style.display = 'none';
-
-  // payloadの各フィールドをhidden inputとして追加
+  // FormDataでfetch送信（Brave Shields対応）
+  var formData = new FormData();
   Object.keys(payload).forEach(function(key) {
-    var input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = key;
-    input.value = payload[key];
-    form.appendChild(input);
+    formData.append(key, payload[key]);
   });
-
-  // 同意書（複数枚）を consentImage_0, consentImage_1, ... として追加
   uploadData.consent.files.forEach(function(file, i) {
-    var imgInput = document.createElement('input');
-    imgInput.type = 'hidden';
-    imgInput.name = 'consentImage_' + i;
-    imgInput.value = file.data;
-    form.appendChild(imgInput);
-    var nameInput = document.createElement('input');
-    nameInput.type = 'hidden';
-    nameInput.name = 'consentFileName_' + i;
-    nameInput.value = file.name;
-    form.appendChild(nameInput);
+    formData.append('consentImage_' + i, file.data);
+    formData.append('consentFileName_' + i, file.name);
   });
 
-  document.body.appendChild(form);
-  form.submit();
+  // タイムアウト用 AbortController
+  var controller = new AbortController();
+  var timeoutId = setTimeout(function() { controller.abort(); }, 30000);
 
-  // 送信完了表示
-  setTimeout(function() {
-    var statusHtml = '<div class="confirm-status show">';
-    statusHtml += '<div class="status-icon">✓</div>';
-    statusHtml += '<div class="status-msg">注文を送信しました！</div>';
-    statusHtml += '<div class="status-sub">担当者へ注文内容を送信しました。</div>';
-    statusHtml += '</div>';
-    document.getElementById('confirmBody').innerHTML = statusHtml;
-    footer.innerHTML = '<button class="btn-confirm" onclick="closeConfirm()">閉じる</button>';
-    saveHistory(d);
-    pendingOrder = null;
-    // クリーンアップ
-    setTimeout(function() {
-      document.body.removeChild(form);
-      document.body.removeChild(iframe);
-    }, 3000);
-  }, 2000);
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: formData,
+    signal: controller.signal
+  })
+    .then(function() {
+      clearTimeout(timeoutId);
+      // no-corsモードではレスポンス内容は読めないが、エラーが投げられなければ送信成功
+      var statusHtml = '<div class="confirm-status show">';
+      statusHtml += '<div class="status-icon">✓</div>';
+      statusHtml += '<div class="status-msg">注文を送信しました！</div>';
+      statusHtml += '<div class="status-sub">担当者へ注文内容を送信しました。<br>ご注文ありがとうございました。</div>';
+      statusHtml += '</div>';
+      document.getElementById('confirmBody').innerHTML = statusHtml;
+      footer.innerHTML = '<button class="btn-confirm" onclick="closeConfirm()">閉じる</button>';
+      saveHistory(d);
+      pendingOrder = null;
+    })
+    .catch(function(err) {
+      clearTimeout(timeoutId);
+      console.error('送信エラー:', err);
+      // 失敗：明確にユーザーに伝える
+      var statusHtml = '<div class="confirm-status show">';
+      statusHtml += '<div class="status-icon" style="color:#dc2626">⚠</div>';
+      statusHtml += '<div class="status-msg" style="color:#dc2626">送信に失敗しました</div>';
+      statusHtml += '<div class="status-sub" style="line-height:1.8;">';
+      statusHtml += 'ブラウザのプライバシー保護機能（広告ブロッカー等）により<br>送信がブロックされた可能性があります。<br><br>';
+      statusHtml += '<strong>対処方法：</strong><br>';
+      statusHtml += '① <strong>Google Chrome / Safari</strong> で再度お試しください<br>';
+      statusHtml += '② または、Braveをご利用の場合は<br>　 アドレスバー右の🛡シールドアイコンを<br>　 タップして「シールドを下げる」を選択<br>';
+      statusHtml += '</div></div>';
+      document.getElementById('confirmBody').innerHTML = statusHtml;
+      footer.innerHTML = '<button class="btn-confirm" onclick="closeConfirm()">閉じる</button>';
+      pendingOrder = null;
+    });
 }
 </script>
 </body>
