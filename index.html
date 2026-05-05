@@ -2090,24 +2090,24 @@ function confirmAndSend() {
     return;
   }
 
-  // FormDataでfetch送信（Brave Shields対応）
-  var formData = new FormData();
+  // URL-encoded で送信（GASがe.parameterで読める形式）
+  var params = new URLSearchParams();
   Object.keys(payload).forEach(function(key) {
-    formData.append(key, payload[key]);
+    params.append(key, payload[key]);
   });
   uploadData.consent.files.forEach(function(file, i) {
-    formData.append('consentImage_' + i, file.data);
-    formData.append('consentFileName_' + i, file.name);
+    params.append('consentImage_' + i, file.data);
+    params.append('consentFileName_' + i, file.name);
   });
 
   // タイムアウト用 AbortController
   var controller = new AbortController();
-  var timeoutId = setTimeout(function() { controller.abort(); }, 30000);
+  var timeoutId = setTimeout(function() { controller.abort(); }, 60000);
 
   fetch(GAS_URL, {
     method: 'POST',
-    mode: 'no-cors',
-    body: formData,
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params.toString(),
     signal: controller.signal
   })
     .then(function() {
