@@ -650,20 +650,20 @@ body {
     <div class="field-group full">
       <label>患者同意書（複数枚アップロード可）</label>
       <label class="upload-area" id="consentArea" for="consentFile">
-        <input type="file" id="consentFile" accept="image/jpeg,image/jpg,image/png,image/heic,image/heif,image/webp" multiple onchange="handleMultiUpload('consent', this)" />
+        <input type="file" id="consentFile" accept="image/jpeg,image/jpg,image/png,image/heic,image/heif,image/webp,application/pdf" multiple onchange="handleMultiUpload('consent', this)" />
         <div id="consentPlaceholder">
           <div class="upload-icon">📄</div>
-          <div class="upload-label">タップして同意書の写真を選択（複数選択可）</div>
-          <div class="upload-hint">対応形式：JPEG / PNG / HEIC / WEBP ／ 何枚でもまとめて選択可能</div>
+          <div class="upload-label">タップして同意書を選択（複数選択可）</div>
+          <div class="upload-hint">対応形式：JPEG / PNG / HEIC / WEBP / PDF ／ 何枚でもまとめて選択可能</div>
         </div>
         <div id="consentPreview" style="display:none"></div>
       </label>
     </div>
     <div class="field-group full">
       <label class="upload-area" id="licenseArea" for="licenseFile" style="padding:12px;border-color:#e5e7eb;">
-        <input type="file" id="licenseFile" accept="image/jpeg,image/jpg,image/png,image/heic,image/heif,image/webp" onchange="handleUpload('license', this)" />
+        <input type="file" id="licenseFile" accept="image/jpeg,image/jpg,image/png,image/heic,image/heif,image/webp,application/pdf" onchange="handleUpload('license', this)" />
         <div id="licensePlaceholder">
-          <div style="font-size:11px;"><span style="font-weight:800;color:#1a1a2e;">🪪 歯科医師免許（初回のみ）</span><span style="font-size:10px;color:#9ca3af;margin-left:8px;">タップして写真を選択（JPEG/PNG/HEIC）</span></div>
+          <div style="font-size:11px;"><span style="font-weight:800;color:#1a1a2e;">🪪 歯科医師免許（初回のみ）</span><span style="font-size:10px;color:#9ca3af;margin-left:8px;">タップして選択（JPEG/PNG/HEIC/PDF）</span></div>
         </div>
         <div id="licensePreview" style="display:none"></div>
       </label>
@@ -1472,6 +1472,18 @@ var uploadData = {
   license: { data: null, name: '' }
 };
 
+// PDFかどうか判定
+function isPdf(dataUrl) {
+  return dataUrl && dataUrl.indexOf('application/pdf') > -1;
+}
+function fileThumb(dataUrl, name, alt) {
+  if (isPdf(dataUrl)) {
+    return '<div style="width:100px;height:100px;background:#fef2f2;border:1.5px solid #fecaca;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#dc2626;">' +
+      '<div style="font-size:28px;">📕</div><div style="font-size:10px;font-weight:700;margin-top:2px;">PDF</div></div>';
+  }
+  return '<img src="' + dataUrl + '" alt="' + (alt || '') + '" style="max-width:100px;max-height:100px;" />';
+}
+
 // 単一ファイルアップロード（license用）
 function handleUpload(type, input) {
   var file = input.files[0];
@@ -1481,8 +1493,10 @@ function handleUpload(type, input) {
   reader.onload = function(e) {
     uploadData[type].data = e.target.result;
     var preview = document.getElementById(type + 'Preview');
-    preview.innerHTML = '<div class="upload-preview">' +
-      '<img src="' + uploadData[type].data + '" alt="' + type + '" />' +
+    var thumb = isPdf(uploadData[type].data)
+      ? '<div style="width:80px;height:80px;background:#fef2f2;border:1.5px solid #fecaca;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#dc2626;"><div style="font-size:24px;">📕</div><div style="font-size:9px;font-weight:700;">PDF</div></div>'
+      : '<img src="' + uploadData[type].data + '" alt="' + type + '" />';
+    preview.innerHTML = '<div class="upload-preview">' + thumb +
       '<button class="upload-remove" onclick="event.stopPropagation();removeUpload(\'' + type + '\')">✕</button>' +
       '</div>' +
       '<div class="upload-filename">' + escHtml(uploadData[type].name) + '</div>';
@@ -1535,14 +1549,15 @@ function renderMultiPreview(type) {
   var preview = document.getElementById(type + 'Preview');
   var html = '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:flex-start;">';
   uploadData[type].files.forEach(function(file, i) {
-    html += '<div class="upload-preview" style="margin:0">' +
-      '<img src="' + file.data + '" alt="同意書" style="max-width:100px;max-height:100px;" />' +
+    var thumb = fileThumb(file.data, file.name, '同意書');
+    html += '<div class="upload-preview" style="margin:0">' + thumb +
       '<button class="upload-remove" onclick="event.stopPropagation();removeMultiFile(\'' + type + '\',' + i + ')">✕</button>' +
+      '<div style="font-size:9px;color:#6b7280;text-align:center;margin-top:2px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escHtml(file.name) + '</div>' +
       '</div>';
   });
   html += '</div>';
   html += '<div style="margin-top:10px;font-size:11px;font-weight:700;color:#00796b;">' +
-    uploadData[type].files.length + '枚 アップロード済 ／ さらに追加するにはタップ</div>';
+    uploadData[type].files.length + '件 アップロード済 ／ さらに追加するにはタップ</div>';
   preview.innerHTML = html;
   preview.style.display = 'block';
   document.getElementById(type + 'Placeholder').style.display = 'none';
