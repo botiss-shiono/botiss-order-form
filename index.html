@@ -1829,6 +1829,21 @@ function resetAll() {
     if (el) el.value = '';
   });
   document.getElementById('f-date').valueAsDate = new Date();
+
+  // アップロード済み書類もリセット
+  uploadData.consent.files = [];
+  uploadData.license = { data: null, name: '' };
+  ['consent', 'license'].forEach(function(type) {
+    var fileInput = document.getElementById(type + 'File');
+    if (fileInput) fileInput.value = '';
+    var preview = document.getElementById(type + 'Preview');
+    if (preview) { preview.style.display = 'none'; preview.innerHTML = ''; }
+    var placeholder = document.getElementById(type + 'Placeholder');
+    if (placeholder) placeholder.style.display = 'block';
+    var area = document.getElementById(type + 'Area');
+    if (area) area.classList.remove('has-file');
+  });
+
   updateAllJpy();
 }
 
