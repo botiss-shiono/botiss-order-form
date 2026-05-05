@@ -648,13 +648,13 @@ body {
       <input type="email" id="f-email" placeholder="yamada@clinic.jp" />
     </div>
     <div class="field-group full">
-      <label>患者同意書</label>
+      <label>患者同意書（複数枚アップロード可）</label>
       <div class="upload-area" id="consentArea" onclick="document.getElementById('consentFile').click()">
-        <input type="file" id="consentFile" accept="image/*" onchange="handleUpload('consent', this)" />
+        <input type="file" id="consentFile" accept="image/*" multiple onchange="handleMultiUpload('consent', this)" />
         <div id="consentPlaceholder">
           <div class="upload-icon">📄</div>
-          <div class="upload-label">タップして同意書の写真を選択</div>
-          <div class="upload-hint">※ 必要枚数は注文後に担当者よりご連絡いたします</div>
+          <div class="upload-label">タップして同意書の写真を選択（複数選択可）</div>
+          <div class="upload-hint">※ 何枚でもまとめて選択可能 ／ 必要枚数は注文後にご連絡</div>
         </div>
         <div id="consentPreview" style="display:none"></div>
       </div>
@@ -1465,9 +1465,14 @@ function hideTooltip() {
   tooltipEl.classList.remove('show');
 }
 
-// ===== 書類アップロード（共通） =====
-var uploadData = { consent: { data: null, name: '' }, license: { data: null, name: '' } };
+// ===== 書類アップロード =====
+// license: 単一ファイル / consent: 複数ファイル
+var uploadData = {
+  consent: { files: [] }, // [{data, name}, ...]
+  license: { data: null, name: '' }
+};
 
+// 単一ファイルアップロード（license用）
 function handleUpload(type, input) {
   var file = input.files[0];
   if (!file) return;
@@ -1495,6 +1500,56 @@ function removeUpload(type) {
   document.getElementById(type + 'Preview').innerHTML = '';
   document.getElementById(type + 'Placeholder').style.display = 'block';
   document.getElementById(type + 'Area').classList.remove('has-file');
+}
+
+// 複数ファイルアップロード（consent用）
+function handleMultiUpload(type, input) {
+  var files = input.files;
+  if (!files.length) return;
+  var loaded = 0;
+  Array.from(files).forEach(function(file) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      uploadData[type].files.push({ data: e.target.result, name: file.name });
+      loaded++;
+      if (loaded === files.length) {
+        renderMultiPreview(type);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+  // input をリセットして同じファイルでも再選択可能に
+  input.value = '';
+}
+
+function renderMultiPreview(type) {
+  var preview = document.getElementById(type + 'Preview');
+  var html = '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:flex-start;">';
+  uploadData[type].files.forEach(function(file, i) {
+    html += '<div class="upload-preview" style="margin:0">' +
+      '<img src="' + file.data + '" alt="同意書" style="max-width:100px;max-height:100px;" />' +
+      '<button class="upload-remove" onclick="event.stopPropagation();removeMultiFile(\'' + type + '\',' + i + ')">✕</button>' +
+      '</div>';
+  });
+  html += '</div>';
+  html += '<div style="margin-top:10px;font-size:11px;font-weight:700;color:#00796b;">' +
+    uploadData[type].files.length + '枚 アップロード済 ／ さらに追加するにはタップ</div>';
+  preview.innerHTML = html;
+  preview.style.display = 'block';
+  document.getElementById(type + 'Placeholder').style.display = 'none';
+  document.getElementById(type + 'Area').classList.add('has-file');
+}
+
+function removeMultiFile(type, index) {
+  uploadData[type].files.splice(index, 1);
+  if (uploadData[type].files.length === 0) {
+    document.getElementById(type + 'Preview').style.display = 'none';
+    document.getElementById(type + 'Preview').innerHTML = '';
+    document.getElementById(type + 'Placeholder').style.display = 'block';
+    document.getElementById(type + 'Area').classList.remove('has-file');
+  } else {
+    renderMultiPreview(type);
+  }
 }
 
 // ===== アコーディオン =====
@@ -1934,8 +1989,8 @@ function showConfirmModal(d) {
   } else {
     html += '<div style="color:#6b7280;">歯科医師免許：未アップロード（初回のみ必要）</div>';
   }
-  if (uploadData.consent.data) {
-    html += '<div style="color:#16a34a;font-weight:700;margin-top:4px;">✓ 患者同意書 アップロード済</div>';
+  if (uploadData.consent.files.length > 0) {
+    html += '<div style="color:#16a34a;font-weight:700;margin-top:4px;">✓ 患者同意書 ' + uploadData.consent.files.length + '枚 アップロード済</div>';
   } else {
     html += '<div style="color:#6b7280;margin-top:4px;">患者同意書：未アップロード（必要枚数は後日ご連絡）</div>';
   }
@@ -1975,10 +2030,9 @@ function confirmAndSend() {
     totalEur: '€' + d.totalEur,
     totalJpy: '¥' + d.totalJpy.toLocaleString(),
     shipping: shippingStatus,
-    consentImage: uploadData.consent.data || '',
-    consentFileName: uploadData.consent.name || '',
     licenseImage: uploadData.license.data || '',
-    licenseFileName: uploadData.license.name || ''
+    licenseFileName: uploadData.license.name || '',
+    consentCount: uploadData.consent.files.length
   };
 
   // Google Apps Script Web App へ送信
@@ -2017,6 +2071,20 @@ function confirmAndSend() {
     input.name = key;
     input.value = payload[key];
     form.appendChild(input);
+  });
+
+  // 同意書（複数枚）を consentImage_0, consentImage_1, ... として追加
+  uploadData.consent.files.forEach(function(file, i) {
+    var imgInput = document.createElement('input');
+    imgInput.type = 'hidden';
+    imgInput.name = 'consentImage_' + i;
+    imgInput.value = file.data;
+    form.appendChild(imgInput);
+    var nameInput = document.createElement('input');
+    nameInput.type = 'hidden';
+    nameInput.name = 'consentFileName_' + i;
+    nameInput.value = file.name;
+    form.appendChild(nameInput);
   });
 
   document.body.appendChild(form);
