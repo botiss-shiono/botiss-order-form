@@ -96,12 +96,23 @@ body {
   display: block; font-size: 10px; font-weight: 700; color: var(--muted);
   margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;
 }
+.field-group label .required {
+  display: inline-block; background: #dc2626; color: white;
+  font-size: 8px; font-weight: 700; padding: 2px 5px; border-radius: 3px;
+  margin-left: 5px; vertical-align: 1px; letter-spacing: 0.3px;
+}
+.field-group .field-note {
+  display: block; font-size: 10px; color: #6b7280; font-weight: 400;
+  text-transform: none; letter-spacing: 0; margin-top: 4px; line-height: 1.5;
+}
 .field-group input {
   width: 100%; padding: 9px 12px; border: 1.5px solid var(--border);
   border-radius: 8px; font-size: 13px; font-family: inherit;
   background: #fafcff; transition: border-color 0.2s, box-shadow 0.2s;
 }
 .field-group input:focus { outline:none; border-color:#00b4d8; box-shadow:0 0 0 3px rgba(0,180,216,0.15); }
+.field-group input.invalid { border-color: #dc2626; background: #fef2f2; }
+.field-group input.invalid:focus { box-shadow: 0 0 0 3px rgba(220,38,38,0.15); }
 
 /* ===== RATE CARD ===== */
 .rate-card {
@@ -627,24 +638,25 @@ body {
       <input type="date" id="f-date" />
     </div>
     <div class="field-group">
-      <label>TEL</label>
-      <input type="tel" id="f-tel" placeholder="03-0000-0000" />
+      <label>TEL<span class="required">必須</span></label>
+      <input type="tel" id="f-tel" placeholder="03-0000-0000" oninput="this.classList.remove('invalid')" />
     </div>
     <div class="field-group">
-      <label>Clinic Name（医院名）</label>
-      <input type="text" id="f-clinic" placeholder="○○歯科クリニック" />
+      <label>Clinic Name（医院名）<span class="required">必須</span></label>
+      <input type="text" id="f-clinic" placeholder="○○歯科クリニック" oninput="this.classList.remove('invalid')" />
     </div>
     <div class="field-group">
-      <label>Doctor Name（担当者名）</label>
-      <input type="text" id="f-doctor" placeholder="山田 太郎" />
+      <label>先生のお名前<span class="required">必須</span></label>
+      <input type="text" id="f-doctor" placeholder="山田 太郎" oninput="this.classList.remove('invalid')" />
+      <span class="field-note">※ botiss登録済みの先生のお名前をご記入ください（勤務医など未登録の先生はご利用いただけません）</span>
     </div>
     <div class="field-group full">
       <label>Clinic Address（住所）</label>
       <input type="text" id="f-address" placeholder="東京都○○区..." />
     </div>
     <div class="field-group">
-      <label>メールアドレス（返信先）</label>
-      <input type="email" id="f-email" placeholder="yamada@clinic.jp" />
+      <label>メールアドレス（返信先）<span class="required">必須</span></label>
+      <input type="email" id="f-email" placeholder="yamada@clinic.jp" oninput="this.classList.remove('invalid')" />
     </div>
     <div class="field-group full">
       <label>患者同意書（複数枚アップロード可）</label>
@@ -1979,10 +1991,42 @@ function sendOrder() {
     showToast('⚠ 注文製品が選択されていません');
     return;
   }
-  if (!d.info.clinic) {
-    showToast('⚠ 医院名を入力してください');
+
+  // 必須項目チェック
+  var required = [
+    { id: 'f-tel', name: 'TEL' },
+    { id: 'f-clinic', name: '医院名' },
+    { id: 'f-doctor', name: '先生のお名前' },
+    { id: 'f-email', name: 'メールアドレス' }
+  ];
+  var missing = [];
+  required.forEach(function(f){
+    var el = document.getElementById(f.id);
+    el.classList.remove('invalid');
+    if (!el.value.trim()) {
+      el.classList.add('invalid');
+      missing.push(f.name);
+    }
+  });
+
+  // メール形式チェック
+  var emailEl = document.getElementById('f-email');
+  if (emailEl.value.trim() && !emailEl.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+    emailEl.classList.add('invalid');
+    missing.push('メールアドレス（形式不正）');
+  }
+
+  if (missing.length > 0) {
+    showToast('⚠ 必須項目を入力してください：' + missing.join('、'));
+    // 最初の不正フィールドにスクロール
+    var firstInvalid = document.querySelector('.field-group input.invalid');
+    if (firstInvalid) {
+      firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(function(){ firstInvalid.focus(); }, 400);
+    }
     return;
   }
+
   pendingOrder = d;
   showConfirmModal(d);
 }
