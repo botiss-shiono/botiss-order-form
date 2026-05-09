@@ -1972,14 +1972,32 @@ function reorder(id) {
 
   document.getElementById('f-clinic').value  = entry.clinic || '';
   document.getElementById('f-doctor').value  = entry.doctor || '';
-  if (entry.tel)     document.getElementById('f-tel').value     = entry.tel;
-  if (entry.address) document.getElementById('f-address').value = entry.address;
-  if (entry.email)   document.getElementById('f-email').value   = entry.email;
-  document.getElementById('rate').value       = entry.rate || 184;
+  // 古い履歴にない場合は、自動保存されている顧客情報からフォールバック
+  var saved = JSON.parse(localStorage.getItem('botiss_user_info') || '{}');
+  document.getElementById('f-tel').value     = entry.tel     || saved.tel     || '';
+  document.getElementById('f-address').value = entry.address || saved.address || '';
+  document.getElementById('f-email').value   = entry.email   || saved.email   || '';
+  document.getElementById('rate').value      = entry.rate || 184;
   updateAllJpy();
   closeHist();
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  showToast('📋 入力欄に反映しました。内容を確認して「注文を送信」を押してください');
+
+  // 必須項目が埋まっていない場合は警告
+  var missing = [];
+  if (!document.getElementById('f-tel').value)   missing.push('TEL');
+  if (!document.getElementById('f-email').value) missing.push('メールアドレス');
+  if (missing.length > 0) {
+    showToast('⚠ ' + missing.join('・') + ' を入力してから送信してください');
+    setTimeout(function(){
+      var first = missing[0] === 'TEL' ? 'f-tel' : 'f-email';
+      var el = document.getElementById(first);
+      el.classList.add('invalid');
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(function(){ el.focus(); }, 400);
+    }, 1500);
+  } else {
+    showToast('📋 入力欄に反映しました。内容を確認して「注文を送信」を押してください');
+  }
 }
 
 // ===== 注文確認画面 =====
