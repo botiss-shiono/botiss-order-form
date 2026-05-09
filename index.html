@@ -1848,22 +1848,29 @@ function resetAll() {
 
 // ===== 履歴保存 =====
 function saveHistory(d) {
-  saveUserInfo(); // 顧客情報を保存
-  if (!d.items.length) return;
-  const hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
-  hist.unshift({
-    id:       Date.now(),
-    savedAt:  new Date().toLocaleString('ja-JP'),
-    clinic:   d.info.clinic,
-    doctor:   d.info.doctor,
-    date:     d.info.date,
-    rate:     d.info.rate,
-    totalEur: d.totalEur,
-    totalJpy: d.totalJpy,
-    items:    d.items
-  });
-  if (hist.length > 50) hist.pop();
-  localStorage.setItem(HIST_KEY, JSON.stringify(hist));
+  try {
+    saveUserInfo(); // 顧客情報を保存
+    if (!d.items.length) return;
+    const hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
+    hist.unshift({
+      id:       Date.now(),
+      savedAt:  new Date().toLocaleString('ja-JP'),
+      clinic:   d.info.clinic,
+      doctor:   d.info.doctor,
+      tel:      d.info.tel,
+      address:  d.info.address,
+      email:    d.info.email,
+      date:     d.info.date,
+      rate:     d.info.rate,
+      totalEur: d.totalEur,
+      totalJpy: d.totalJpy,
+      items:    d.items
+    });
+    if (hist.length > 50) hist.pop();
+    localStorage.setItem(HIST_KEY, JSON.stringify(hist));
+  } catch (e) {
+    console.error('履歴保存エラー:', e);
+  }
 }
 
 // ===== 履歴パネル =====
@@ -1951,12 +1958,16 @@ function reorder(id) {
     }
   });
 
-  document.getElementById('f-clinic').value = entry.clinic || '';
-  document.getElementById('f-doctor').value = entry.doctor || '';
-  document.getElementById('rate').value      = entry.rate || 184;
+  document.getElementById('f-clinic').value  = entry.clinic || '';
+  document.getElementById('f-doctor').value  = entry.doctor || '';
+  if (entry.tel)     document.getElementById('f-tel').value     = entry.tel;
+  if (entry.address) document.getElementById('f-address').value = entry.address;
+  if (entry.email)   document.getElementById('f-email').value   = entry.email;
+  document.getElementById('rate').value       = entry.rate || 184;
   updateAllJpy();
   closeHist();
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  showToast('✓ 履歴から再注文内容を復元しました');
 }
 
 // ===== 注文確認画面 =====
