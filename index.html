@@ -2201,6 +2201,10 @@ function showConfirmModal(d) {
   html += '</div>';
 
   document.getElementById('confirmBody').innerHTML = html;
+  // フッターを「戻る + 送信」状態に毎回リセット（前回が「閉じる」だけになっていても復元）
+  document.getElementById('confirmFooter').innerHTML =
+    '<button class="btn-back" onclick="closeConfirm()">戻る</button>' +
+    '<button class="btn-confirm" onclick="confirmAndSend()">この内容で送信する</button>';
   document.getElementById('confirmFooter').style.display = 'flex';
   document.getElementById('confirmOverlay').classList.add('show');
 }
