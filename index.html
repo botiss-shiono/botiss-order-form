@@ -1721,6 +1721,7 @@ function chg(btn, delta) {
 function updateSubtotal(accDiv) {
   const id    = accDiv.id.replace('acc-', '');
   const subEl = document.getElementById('sub-' + id);
+  if (!subEl) return; // お問合せ製品など、小計要素がない場合スキップ
   const rate  = parseFloat(document.getElementById('rate').value) || 0;
   let sub = 0;
   accDiv.querySelectorAll('tr[data-price]').forEach(function(row) {
@@ -2187,12 +2188,12 @@ function showConfirmModal(d) {
 
   // 書類の有無
   html += '<div class="confirm-section" style="margin-top:14px"><h4>提出書類</h4>';
-  if (uploadData.license.data) {
+  if (uploadData && uploadData.license && uploadData.license.data) {
     html += '<div style="color:#16a34a;font-weight:700;">✓ 歯科医師免許 アップロード済</div>';
   } else {
     html += '<div style="color:#6b7280;">歯科医師免許：未アップロード（初回のみ必要）</div>';
   }
-  if (uploadData.consent.files.length > 0) {
+  if (uploadData && uploadData.consent && uploadData.consent.files && uploadData.consent.files.length > 0) {
     html += '<div style="color:#16a34a;font-weight:700;margin-top:4px;">✓ 患者同意書 ' + uploadData.consent.files.length + '枚 アップロード済</div>';
   } else {
     html += '<div style="color:#6b7280;margin-top:4px;">患者同意書：未アップロード（必要枚数は後日ご連絡）</div>';
