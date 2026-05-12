@@ -281,6 +281,34 @@ body {
   color: #00a19a; letter-spacing: -0.5px;
 }
 
+/* お問合せ専用バッジ */
+.inquiry-badge {
+  background: linear-gradient(135deg, #d97706, #f59e0b);
+  color: white; font-size: 9px; font-weight: 800;
+  padding: 2px 7px; border-radius: 5px; letter-spacing: 0.5px;
+  box-shadow: 0 1px 4px rgba(217,119,6,0.4);
+}
+/* お問合せ専用ボディ */
+.inquiry-body {
+  padding: 18px 22px; background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  border-radius: 0 0 12px 12px;
+}
+.inquiry-body .inquiry-title {
+  font-size: 13px; font-weight: 800; color: #92400e;
+  margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+}
+.inquiry-body .inquiry-text {
+  font-size: 12px; line-height: 1.8; color: #78350f;
+}
+.inquiry-body .inquiry-text strong {
+  color: #92400e; font-weight: 800;
+}
+.inquiry-body .inquiry-cta {
+  margin-top: 12px; padding: 10px 14px; background: white;
+  border: 1.5px dashed #d97706; border-radius: 8px;
+  font-size: 11.5px; color: #78350f; line-height: 1.7;
+}
+
 .acc-info { flex: 1; min-width: 0; }
 .acc-name { font-size: 13px; font-weight: 800; line-height: 1.3; }
 .acc-name.bone  { color: var(--bone-dark); }
@@ -910,6 +938,37 @@ body {
   </div>
 </div>
 
+<!-- maxgraft® bonebuilder -->
+<div class="accordion" id="acc-bonebuilder">
+  <div class="acc-header bone" onclick="toggleAcc('bonebuilder')">
+    <div class="acc-img-wrap">
+      <img class="acc-img" src="images/maxgraft-bonebuilder.jpg" alt="maxgraft bonebuilder"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'acc-img-placeholder\'>b</span>'">
+    </div>
+    <div class="acc-info">
+      <div class="acc-name bone">maxgraft® bonebuilder<span class="kana">マックスグラフト ボーンビルダー</span></div>
+      <div class="acc-meta">カスタムオーダーメイド ／ CTデータから患者個別に製造</div>
+    </div>
+    <div class="acc-badge-area">
+      <span class="inquiry-badge">お問合せ</span>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </div>
+  <div class="acc-body bone" id="body-bonebuilder">
+    <div class="inquiry-body">
+      <div class="inquiry-title">📩 こちらの製品はお問合せ製品です</div>
+      <div class="inquiry-text">
+        <strong>maxgraft® bonebuilder</strong> は、患者様のCTデータをもとに製造する<strong>カスタムオーダーメイド</strong>の骨補填材ブロックです。<br>
+        規格品ではないため、ご注文には別途お見積もり・打ち合わせが必要となります。
+      </div>
+      <div class="inquiry-cta">
+        💬 ご興味のある方は、<strong>下部「備考」欄</strong>にその旨をご記入のうえ送信ください。<br>
+        担当者より別途ご連絡差し上げます。
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- 膜カテゴリ -->
 <div class="cat-group-label mem">🔬 メンブレン（Membranes）</div>
 
@@ -1396,6 +1455,7 @@ var PRODUCT_TIPS = {
   'maxgraft-cc': 'ヒト同種骨由来の皮質海綿骨顆粒。天然の骨構造を保持しつつ、皮質骨と海綿骨の両方の特性を持ち、構造的サポートと骨形成の場を提供。',
   'bonering': 'ヒト同種骨から製造されたプレファブリケーテッド海綿骨リング。骨造成とインプラント埋入を一回の手術で同時に行えるワンステージ術式を実現し、治療期間を数ヶ月短縮。',
   'cortico': 'ヒト大腿骨骨幹部由来の完全石灰化皮質骨プレート。シェルテクニックに使用され、骨欠損部に固定して内部に顆粒状骨補填材を充填することで、自家骨ブロック採取の合併症を回避しながら歯槽堤造成を行える。',
+  'bonebuilder': '患者様のCTデータをもとにCAD/CAMで製造するカスタムオーダーメイドの同種骨ブロック。骨欠損部の形状に完全一致するため、術中の調整が不要で手術時間を大幅に短縮。骨造成の精度・予知性が向上する。※受注生産のため別途お見積りが必要です。',
   'jason': 'ブタ心膜由来の非架橋コラーゲンメンブレン。ハニカム状の多層構造により優れた引裂き耐性と自然な長期バリア機能を発揮。非常に薄く、GBR/GTR手術における組織再生のオールラウンダー。',
   'colliprotect': 'ブタ真皮由来の天然コラーゲンメンブレン。毛包由来の天然ポアが早期の血管新生を促進しながら軟組織の侵入を防止。乾燥時は硬く自立し、水和後は柔軟に表面に適合する中期バリア機能を持つ。',
   'permamem': '高密度PTFE製の非吸収性メンブレン。厚さ約0.08mmと極めて薄いながら優れた360°引裂き耐性と細菌・細胞遮断性を持つ。開放創治癒（オープンヒーリング）が可能で、抜歯窩・歯槽堤保存に最適。',
