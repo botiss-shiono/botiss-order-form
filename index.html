@@ -309,6 +309,37 @@ body {
   font-size: 11.5px; color: #78350f; line-height: 1.7;
 }
 
+/* セット内容物の画像表示 */
+.set-contents {
+  padding: 14px 16px; background: #f8fffe;
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+.set-contents-title {
+  font-size: 11px; font-weight: 800; color: #00796b;
+  margin-bottom: 10px; letter-spacing: 0.3px;
+}
+.set-contents-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+}
+.set-content-item {
+  background: white; border: 1px solid #e0f2f1;
+  border-radius: 8px; padding: 6px; text-align: center;
+}
+.set-content-item img {
+  width: 100%; height: 70px; object-fit: contain; display: block;
+  margin-bottom: 4px;
+}
+.set-content-item .item-label {
+  font-size: 10px; font-weight: 700; color: #374151;
+}
+.set-content-item .item-sub {
+  font-size: 9px; color: #6b7280; margin-top: 1px;
+}
+@media (max-width: 520px) {
+  .set-contents-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .set-content-item img { height: 80px; }
+}
+
 .acc-info { flex: 1; min-width: 0; }
 .acc-name { font-size: 13px; font-weight: 800; line-height: 1.3; }
 .acc-name.bone  { color: var(--bone-dark); }
@@ -1333,6 +1364,31 @@ body {
         <tr class="other" data-price="369.66"><td class="td-code">BT1001S2</td><td class="td-spec"><span class="spec-main">Instrument Set</span><span class="spec-sub">cutter + sculptor + scissors + tray</span></td><td class="td-price"><span class="eur">369.66 €</span><span class="jpy">¥—</span></td><td><div class="qty-wrap"><button class="q-btn minus" onclick="chg(this,-1)">−</button><span class="q-num">0</span><button class="q-btn plus" onclick="chg(this,1)">＋</button></div></td></tr>
       </tbody>
     </table>
+    <div class="set-contents">
+      <div class="set-contents-title">📦 セット内容（4点）</div>
+      <div class="set-contents-grid">
+        <div class="set-content-item">
+          <img src="images/instrument-cutter.png" alt="safety cutter" />
+          <div class="item-label">safety cutter</div>
+          <div class="item-sub">セーフティカッター</div>
+        </div>
+        <div class="set-content-item">
+          <img src="images/instrument-sculptor.png" alt="sculptor" />
+          <div class="item-label">sculptor</div>
+          <div class="item-sub">スカルプター</div>
+        </div>
+        <div class="set-content-item">
+          <img src="images/instrument-scissors.png" alt="scissors" />
+          <div class="item-label">scissors</div>
+          <div class="item-sub">シザーズ</div>
+        </div>
+        <div class="set-content-item">
+          <img src="images/instrument-tray.png" alt="steri wash tray" />
+          <div class="item-label">steri wash tray</div>
+          <div class="item-sub">洗浄トレイ</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
