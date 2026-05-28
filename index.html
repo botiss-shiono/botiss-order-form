@@ -1864,38 +1864,45 @@ function collectData() {
 // ===== 注文テキスト生成 =====
 function buildOrderText(d) {
   const lines = [];
+  var isDocumentOnly = d.items.length === 0;
   lines.push('━━━━━━━━━━━━━━━━━━━━');
-  lines.push('　botiss製品 ご注文内容');
+  lines.push(isDocumentOnly ? '　botiss 書類提出' : '　botiss製品 ご注文内容');
   lines.push('━━━━━━━━━━━━━━━━━━━━');
   lines.push('');
   lines.push('■ 顧客情報');
-  lines.push('・注文日：' + (d.info.date || '—'));
+  lines.push('・提出日：' + (d.info.date || '—'));
   lines.push('・医院名：' + (d.info.clinic || '—'));
   lines.push('・担当医：' + (d.info.doctor || '—'));
   lines.push('・住　所：' + (d.info.address || '—'));
   lines.push('・TEL　：' + (d.info.tel || '—'));
   lines.push('・E-mail：' + (d.info.email || '—'));
-  lines.push('');
-  lines.push('■ 注文内容');
-  d.items.forEach(function(it, i) {
-    const spec = it.specSub ? it.specMain + ' ' + it.specSub : it.specMain;
-    lines.push('　' + (i + 1) + '. ' + it.cat);
-    lines.push('　　品番：' + it.code);
-    lines.push('　　仕様：' + spec);
-    lines.push('　　数量：' + it.qty);
-    lines.push('　　小計：€' + it.subtotalEur + '（¥' + it.subtotalJpy.toLocaleString() + '）');
-  });
-  lines.push('');
-  lines.push('■ 合計金額');
-  // 送料ステータス
-  var totalNum = parseFloat(d.totalEur);
-  var shippingText = '送料全額負担（400€未満）';
-  if (totalNum >= 800) shippingText = '送料無料（800€以上）';
-  else if (totalNum >= 400) shippingText = '送料半額負担（400〜799€）';
-  lines.push('・合計（EUR）：€' + d.totalEur);
-  lines.push('・合計（JPY）：¥' + d.totalJpy.toLocaleString());
-  lines.push('・為替レート：1€ = ' + d.info.rate + '円');
-  lines.push('・送料：' + shippingText);
+  if (!isDocumentOnly) {
+    lines.push('');
+    lines.push('■ 注文内容');
+    d.items.forEach(function(it, i) {
+      const spec = it.specSub ? it.specMain + ' ' + it.specSub : it.specMain;
+      lines.push('　' + (i + 1) + '. ' + it.cat);
+      lines.push('　　品番：' + it.code);
+      lines.push('　　仕様：' + spec);
+      lines.push('　　数量：' + it.qty);
+      lines.push('　　小計：€' + it.subtotalEur + '（¥' + it.subtotalJpy.toLocaleString() + '）');
+    });
+    lines.push('');
+    lines.push('■ 合計金額');
+    // 送料ステータス
+    var totalNum = parseFloat(d.totalEur);
+    var shippingText = '送料全額負担（400€未満）';
+    if (totalNum >= 800) shippingText = '送料無料（800€以上）';
+    else if (totalNum >= 400) shippingText = '送料半額負担（400〜799€）';
+    lines.push('・合計（EUR）：€' + d.totalEur);
+    lines.push('・合計（JPY）：¥' + d.totalJpy.toLocaleString());
+    lines.push('・為替レート：1€ = ' + d.info.rate + '円');
+    lines.push('・送料：' + shippingText);
+  } else {
+    lines.push('');
+    lines.push('■ 提出種別');
+    lines.push('・書類提出のみ（製品注文なし）');
+  }
   if (d.info.remarks) {
     lines.push('');
     lines.push('■ 備考');
@@ -2124,8 +2131,11 @@ var pendingOrder = null; // 送信待ちデータ
 
 function sendOrder() {
   const d = collectData();
-  if (!d.items.length) {
-    showToast('⚠ 注文製品が選択されていません');
+  // 製品が0個 かつ 同意書も歯科医師免許もない場合はエラー
+  var hasConsent = uploadData && uploadData.consent && uploadData.consent.files && uploadData.consent.files.length > 0;
+  var hasLicense = uploadData && uploadData.license && uploadData.license.data;
+  if (!d.items.length && !hasConsent && !hasLicense) {
+    showToast('⚠ 製品を選択するか、同意書/歯科医師免許をアップロードしてください');
     return;
   }
 
@@ -2187,24 +2197,31 @@ function showConfirmModal(d) {
   html += '<div class="confirm-row"><span class="label">E-mail</span><span class="value">' + escHtml(d.info.email || '—') + '</span></div>';
   html += '</div>';
 
-  // 注文内容
-  html += '<div class="confirm-section"><h4>注文内容（' + d.items.length + '件）</h4>';
-  d.items.forEach(function(it) {
-    var spec = it.specSub ? it.specMain + ' ' + it.specSub : it.specMain;
-    html += '<div class="confirm-item">';
-    html += '<div class="item-name">' + escHtml(it.cat) + '</div>';
-    html += '<div class="item-detail">品番: ' + escHtml(it.code) + ' ／ ' + escHtml(spec) + ' ／ 数量: ' + it.qty + '</div>';
-    html += '<div class="item-price">€' + it.subtotalEur + '（¥' + it.subtotalJpy.toLocaleString() + '）</div>';
+  // 注文内容（製品がある場合のみ）
+  if (d.items.length > 0) {
+    html += '<div class="confirm-section"><h4>注文内容（' + d.items.length + '件）</h4>';
+    d.items.forEach(function(it) {
+      var spec = it.specSub ? it.specMain + ' ' + it.specSub : it.specMain;
+      html += '<div class="confirm-item">';
+      html += '<div class="item-name">' + escHtml(it.cat) + '</div>';
+      html += '<div class="item-detail">品番: ' + escHtml(it.code) + ' ／ ' + escHtml(spec) + ' ／ 数量: ' + it.qty + '</div>';
+      html += '<div class="item-price">€' + it.subtotalEur + '（¥' + it.subtotalJpy.toLocaleString() + '）</div>';
+      html += '</div>';
+    });
     html += '</div>';
-  });
-  html += '</div>';
 
-  // 合計
-  html += '<div class="confirm-total">';
-  html += '<div class="total-eur">€ ' + d.totalEur + '</div>';
-  html += '<div class="total-jpy">¥ ' + d.totalJpy.toLocaleString() + '</div>';
-  html += '<div class="total-shipping" style="' + shippingClass + '">' + shippingText + '</div>';
-  html += '<div style="font-size:10px;color:#888;margin-top:4px;">為替レート：1€ = ' + d.info.rate + '円</div>';
+    // 合計
+    html += '<div class="confirm-total">';
+    html += '<div class="total-eur">€ ' + d.totalEur + '</div>';
+    html += '<div class="total-jpy">¥ ' + d.totalJpy.toLocaleString() + '</div>';
+    html += '<div class="total-shipping" style="' + shippingClass + '">' + shippingText + '</div>';
+    html += '<div style="font-size:10px;color:#888;margin-top:4px;">為替レート：1€ = ' + d.info.rate + '円</div>';
+  } else {
+    // 書類のみ提出の場合
+    html += '<div class="confirm-section"><h4>提出種別</h4>';
+    html += '<div style="background:#fffbeb;border:1.5px solid #fde047;border-radius:10px;padding:12px 16px;color:#92400e;font-weight:700;">📋 書類提出のみ（製品注文なし）</div>';
+    html += '</div>';
+    html += '<div class="confirm-total" style="background:transparent;border:none;padding:0;">';
   html += '</div>';
 
   if (d.info.remarks) {
@@ -2253,10 +2270,12 @@ function confirmAndSend() {
   if (totalNum >= 800) shippingStatus = '800€以上 — 送料無料';
   else if (totalNum >= 400) shippingStatus = '400〜799€ — 送料半額';
 
+  // 注文なしで書類のみの場合は件名を変更
+  var subjectPrefix = d.items.length > 0 ? '【botiss注文】' : '【書類提出】';
   var payload = {
     to: NOTIFY_EMAIL,
     customerEmail: d.info.email || '',
-    subject: '【botiss注文】' + (d.info.clinic || '') + ' ' + (d.info.date || ''),
+    subject: subjectPrefix + (d.info.clinic || '') + ' ' + (d.info.date || ''),
     body: orderText,
     clinic: d.info.clinic || '—',
     doctor: d.info.doctor || '—',
