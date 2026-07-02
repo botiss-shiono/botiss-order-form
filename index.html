@@ -668,6 +668,23 @@ body {
     </div>
   </div>
 </div>
+
+<!-- 送料警告モーダル -->
+<div class="confirm-overlay" id="shippingOverlay">
+  <div class="confirm-modal" style="max-width:440px;">
+    <div class="confirm-header" style="background:linear-gradient(135deg,#f59e0b,#ea580c);">
+      <h3>🚚 送料についてのご確認</h3>
+      <p>もう少しで送料がお得になります</p>
+    </div>
+    <div class="confirm-body" id="shippingBody" style="text-align:center;padding:24px 20px;">
+      <!-- 動的に内容を挿入 -->
+    </div>
+    <div class="confirm-footer">
+      <button class="btn-back" onclick="closeShipping()">追加する</button>
+      <button class="btn-confirm" style="background:linear-gradient(135deg,#f59e0b,#ea580c);" onclick="proceedFromShipping()">このまま送信する</button>
+    </div>
+  </div>
+</div>
 </head>
 <body>
 
@@ -2175,7 +2192,63 @@ function sendOrder() {
   }
 
   pendingOrder = d;
+
+  // 送料警告チェック：合計が800€未満で製品を注文している場合
+  var totalNum = parseFloat(d.totalEur) || 0;
+  if (d.items.length > 0 && totalNum < 800) {
+    showShippingWarning(d);
+    return;
+  }
+
   showConfirmModal(d);
+}
+
+// 送料警告モーダル表示
+function showShippingWarning(d) {
+  var totalNum = parseFloat(d.totalEur) || 0;
+  var remaining = (800 - totalNum).toFixed(2);
+  var rate = parseFloat(document.getElementById('rate').value) || 0;
+  var remainingJpy = Math.round(parseFloat(remaining) * rate).toLocaleString();
+
+  var msg = '';
+  if (totalNum < 400) {
+    msg = '<div style="font-size:14px;color:#92400e;font-weight:700;margin-bottom:16px;">現在のご注文金額</div>';
+    msg += '<div style="font-size:28px;font-weight:900;color:#dc2626;margin-bottom:6px;">€ ' + d.totalEur + '</div>';
+    msg += '<div style="font-size:12px;color:#6b7280;margin-bottom:20px;">¥ ' + d.totalJpy.toLocaleString() + '</div>';
+    msg += '<div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:10px;padding:14px;margin-bottom:16px;">';
+    msg += '<div style="font-size:13px;color:#b91c1c;font-weight:700;">⚠ 400€未満のため 送料全額のご負担</div>';
+    msg += '</div>';
+    msg += '<div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fde047;border-radius:10px;padding:16px;">';
+    msg += '<div style="font-size:12px;color:#92400e;margin-bottom:6px;">💡 あと <strong style="font-size:18px;color:#dc2626;">€ ' + remaining + '</strong>（¥' + remainingJpy + '）で</div>';
+    msg += '<div style="font-size:15px;color:#16a34a;font-weight:800;">🎉 送料無料！</div>';
+    msg += '<div style="font-size:11px;color:#78350f;margin-top:8px;">400〜799€で送料半額、800€以上で完全無料になります</div>';
+    msg += '</div>';
+  } else {
+    // 400〜799€
+    msg = '<div style="font-size:14px;color:#92400e;font-weight:700;margin-bottom:16px;">現在のご注文金額</div>';
+    msg += '<div style="font-size:28px;font-weight:900;color:#d97706;margin-bottom:6px;">€ ' + d.totalEur + '</div>';
+    msg += '<div style="font-size:12px;color:#6b7280;margin-bottom:20px;">¥ ' + d.totalJpy.toLocaleString() + '</div>';
+    msg += '<div style="background:#fffbeb;border:1.5px solid #fde047;border-radius:10px;padding:14px;margin-bottom:16px;">';
+    msg += '<div style="font-size:13px;color:#d97706;font-weight:700;">△ 400〜799€のため 送料半額のご負担</div>';
+    msg += '</div>';
+    msg += '<div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #86efac;border-radius:10px;padding:16px;">';
+    msg += '<div style="font-size:12px;color:#166534;margin-bottom:6px;">💡 あと <strong style="font-size:18px;color:#dc2626;">€ ' + remaining + '</strong>（¥' + remainingJpy + '）で</div>';
+    msg += '<div style="font-size:15px;color:#16a34a;font-weight:800;">🎉 送料完全無料！</div>';
+    msg += '</div>';
+  }
+
+  document.getElementById('shippingBody').innerHTML = msg;
+  document.getElementById('shippingOverlay').classList.add('show');
+}
+
+function closeShipping() {
+  document.getElementById('shippingOverlay').classList.remove('show');
+  pendingOrder = null;
+}
+
+function proceedFromShipping() {
+  document.getElementById('shippingOverlay').classList.remove('show');
+  if (pendingOrder) showConfirmModal(pendingOrder);
 }
 
 function showConfirmModal(d) {
